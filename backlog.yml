@@ -1,0 +1,118 @@
+---
+# IoT Edge Graph Anomaly Detection - Backlog
+# WSJF Scoring: Cost of Delay (value + time_criticality + risk_reduction) / Effort
+# Scale: 1-2-3-5-8-13 (Fibonacci)
+
+backlog:
+  - id: "core-01"
+    title: "Implement LSTM Autoencoder Core"
+    type: "feature"
+    description: "Create the foundational LSTM autoencoder for temporal anomaly detection"
+    acceptance_criteria:
+      - "LSTM model accepts time-series sensor data"
+      - "Autoencoder reconstructs input with configurable threshold"
+      - "Model can be trained and saved"
+      - "Unit tests cover core functionality"
+    effort: 8
+    value: 13
+    time_criticality: 8
+    risk_reduction: 5
+    status: "NEW"
+    risk_tier: "medium"
+    created_at: "2025-07-26"
+    links: []
+    
+  - id: "core-02"
+    title: "Implement Graph Neural Network Layer"
+    type: "feature"
+    description: "Add GNN to capture spatial relationships between IoT sensors"
+    acceptance_criteria:
+      - "GNN processes sensor topology graph"
+      - "Integrates with LSTM output for hybrid detection"
+      - "Configurable graph structure"
+      - "Performance within edge device constraints"
+    effort: 13
+    value: 13
+    time_criticality: 5
+    risk_reduction: 3
+    status: "NEW"
+    risk_tier: "high"
+    created_at: "2025-07-26"
+    links: []
+    
+  - id: "infra-01"
+    title: "Create Dockerfile and Container Setup"
+    type: "infrastructure"
+    description: "Containerize application for edge deployment"
+    acceptance_criteria:
+      - "Multi-stage Docker build for minimal image size"
+      - "Image under 100MB"
+      - "Runs on ARM64 for Raspberry Pi compatibility"
+      - "Security best practices applied"
+    effort: 5
+    value: 8
+    time_criticality: 8
+    risk_reduction: 8
+    status: "NEW"
+    risk_tier: "medium"
+    created_at: "2025-07-26"
+    links: []
+    
+  - id: "monitoring-01"
+    title: "Implement OTLP Metrics Export"
+    type: "feature"
+    description: "Export anomaly counts and metrics via OTLP to observability stack"
+    acceptance_criteria:
+      - "OTLP exporter configured"
+      - "Anomaly count metrics exported"
+      - "System resource metrics included"
+      - "Configurable endpoint and auth"
+    effort: 5
+    value: 8
+    time_criticality: 3
+    risk_reduction: 5
+    status: "NEW"
+    risk_tier: "low"
+    created_at: "2025-07-26"
+    links: []
+    
+  - id: "setup-01"
+    title: "Create Project Structure and Dependencies"
+    type: "setup"
+    description: "Establish Python project structure with required dependencies"
+    acceptance_criteria:
+      - "requirements.txt with ML dependencies"
+      - "Source code directory structure"
+      - "Test framework setup"
+      - "Basic CI/CD configuration"
+    effort: 3
+    value: 5
+    time_criticality: 13
+    risk_reduction: 8
+    status: "READY"
+    risk_tier: "low"
+    created_at: "2025-07-26"
+    links: []
+    
+  - id: "data-01"
+    title: "Implement SWaT Dataset Integration"
+    type: "feature"
+    description: "Add support for training with SWaT dataset"
+    acceptance_criteria:
+      - "Dataset loader for SWaT format"
+      - "Data preprocessing pipeline"
+      - "Train/validation split functionality"
+      - "Data validation and error handling"
+    effort: 5
+    value: 8
+    time_criticality: 5
+    risk_reduction: 3
+    status: "NEW"
+    risk_tier: "medium"
+    created_at: "2025-07-26"
+    links: []
+
+metadata:
+  last_updated: "2025-07-26T00:00:00Z"
+  total_items: 6
+  wsjf_calculated: true
