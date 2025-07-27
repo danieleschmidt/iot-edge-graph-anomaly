@@ -1,0 +1,114 @@
+groups:
+  - name: iot_edge_anomaly_alerts
+    rules:
+      - alert: HighAnomalyRate
+        expr: rate(anomaly_detections_total[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High anomaly detection rate"
+          description: "Anomaly detection rate is {{ $value }} per second, which is above the threshold of 0.1"
+
+      - alert: ModelInferenceLatencyHigh
+        expr: histogram_quantile(0.95, rate(model_inference_duration_seconds_bucket[5m])) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High model inference latency"
+          description: "95th percentile inference latency is {{ $value }}s, which exceeds 100ms threshold"
+
+      - alert: EdgeDeviceMemoryHigh
+        expr: (container_memory_usage_bytes{name="iot-edge-anomaly-detector"} / container_spec_memory_limit_bytes{name="iot-edge-anomaly-detector"}) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage on edge device"
+          description: "Memory usage is {{ $value }}%, which exceeds 80% threshold"
+
+      - alert: EdgeDeviceCPUHigh
+        expr: rate(container_cpu_usage_seconds_total{name="iot-edge-anomaly-detector"}[5m]) * 100 > 25
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage on edge device"
+          description: "CPU usage is {{ $value }}%, which exceeds 25% threshold"
+
+      - alert: ModelInferenceErrors
+        expr: rate(model_inference_errors_total[5m]) > 0.01
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Model inference errors detected"
+          description: "Model inference error rate is {{ $value }} per second"
+
+      - alert: SensorDataStale
+        expr: time() - sensor_data_last_received_timestamp > 300
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Sensor data is stale"
+          description: "No sensor data received for {{ $value }} seconds"
+
+      - alert: EdgeDeviceDown
+        expr: up{job="iot-edge-anomaly"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Edge device is down"
+          description: "Edge device has been down for more than 1 minute"
+
+      - alert: PrometheusDown
+        expr: up{job="prometheus"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Prometheus is down"
+          description: "Prometheus has been down for more than 1 minute"
+
+  - name: performance_alerts
+    rules:
+      - alert: LowThroughput
+        expr: rate(processed_samples_total[5m]) < 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low sample processing throughput"
+          description: "Sample processing rate is {{ $value }} per second, below expected 10/s"
+
+      - alert: HighErrorRate
+        expr: rate(errors_total[5m]) / rate(requests_total[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate"
+          description: "Error rate is {{ $value }}, which exceeds 5% threshold"
+
+  - name: security_alerts
+    rules:
+      - alert: CriticalAnomalyDetected
+        expr: anomaly_severity > 0.9
+        for: 0s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical anomaly detected"
+          description: "Critical anomaly with severity {{ $value }} detected in sensor network"
+
+      - alert: CoordinatedAttackSuspected
+        expr: count(anomaly_detected{attack_type="coordinated"}) > 3
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Coordinated attack suspected"
+          description: "{{ $value }} coordinated anomalies detected within 1 minute"

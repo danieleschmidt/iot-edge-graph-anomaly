@@ -1,0 +1,60 @@
+# Development Dockerfile with additional tools
+FROM python:3.10-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc \
+    g++ \
+    git \
+    curl \
+    vim \
+    htop \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements and install dependencies
+COPY requirements.txt pyproject.toml ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install development dependencies
+RUN pip install --no-cache-dir \
+    pytest>=7.4.0 \
+    pytest-cov>=4.1.0 \
+    pytest-mock>=3.11.0 \
+    pytest-xdist>=3.3.0 \
+    black>=23.7.0 \
+    flake8>=6.0.0 \
+    mypy>=1.5.0 \
+    pre-commit>=3.3.0 \
+    bandit>=1.7.0 \
+    safety>=2.3.0 \
+    isort>=5.12.0 \
+    coverage>=7.3.0 \
+    debugpy>=1.6.0 \
+    jupyterlab>=4.0.0 \
+    ipywidgets>=8.0.0 \
+    matplotlib>=3.7.0 \
+    seaborn>=0.12.0
+
+# Copy source code
+COPY src/ src/
+COPY tests/ tests/
+COPY setup.py ./
+
+# Install package in development mode
+RUN pip install -e .
+
+# Set environment variables
+ENV PYTHONPATH=/app/src
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV DEVELOPMENT=1
+
+# Expose ports
+EXPOSE 8080 5678 8888
+
+# Default command (can be overridden)
+CMD ["python", "-m", "iot_edge_anomaly.main"]
