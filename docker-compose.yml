@@ -1,0 +1,196 @@
+version: '3.8'
+
+services:
+  # ── IOT EDGE ANOMALY DETECTION APP ──
+  iot-edge-anomaly:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: iot-edge-anomaly
+    restart: unless-stopped
+    environment:
+      - LOG_LEVEL=INFO
+      - ANOMALY_THRESHOLD=0.5
+      - OTLP_ENDPOINT=http://otel-collector:4317
+      - PROMETHEUS_PORT=9090
+      - HEALTH_CHECK_PORT=8080
+      - DEVICE_ID=edge-device-001
+    ports:
+      - "8000:8000"   # Application port
+      - "8080:8080"   # Health check port
+      - "9090:9090"   # Prometheus metrics
+    volumes:
+      - ./models:/app/models:ro
+      - ./data:/app/data:ro
+      - ./logs:/app/logs
+    networks:
+      - iot-network
+    depends_on:
+      - otel-collector
+      - prometheus
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ── MONITORING STACK ──
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: iot-prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - iot-network
+
+  grafana:
+    image: grafana/grafana:10.0.0
+    container_name: iot-grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      - iot-network
+    depends_on:
+      - prometheus
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.82.0
+    container_name: iot-otel-collector
+    restart: unless-stopped
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./monitoring/otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+      - "8888:8888"   # Prometheus metrics
+    networks:
+      - iot-network
+    depends_on:
+      - prometheus
+
+  # ── DEVELOPMENT TOOLS ──
+  jupyter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: iot-jupyter
+    restart: "no"
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/app
+      - jupyter_data:/home/jovyan/work
+    networks:
+      - iot-network
+    profiles:
+      - dev
+
+  # ── DATA SIMULATION ──
+  sensor-simulator:
+    build:
+      context: .
+      dockerfile: Dockerfile.simulator
+    container_name: iot-sensor-simulator
+    restart: unless-stopped
+    environment:
+      - SIMULATION_RATE=10  # Hz
+      - ANOMALY_PROBABILITY=0.1
+      - OUTPUT_ENDPOINT=http://iot-edge-anomaly:8000/ingest
+    networks:
+      - iot-network
+    profiles:
+      - simulation
+    depends_on:
+      - iot-edge-anomaly
+
+  # ── MESSAGE BROKER ──
+  mqtt-broker:
+    image: eclipse-mosquitto:2.0.15
+    container_name: iot-mqtt-broker
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_logs:/mosquitto/log
+    networks:
+      - iot-network
+    profiles:
+      - mqtt
+
+  # ── DATABASE FOR ANOMALY STORAGE ──
+  timescaledb:
+    image: timescale/timescaledb:latest-pg15
+    container_name: iot-timescaledb
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=iot_anomalies
+      - POSTGRES_USER=iot_user
+      - POSTGRES_PASSWORD=iot_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+      - ./scripts/init-timescaledb.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - iot-network
+    profiles:
+      - storage
+
+# ── NETWORKS ──
+networks:
+  iot-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# ── VOLUMES ──
+volumes:
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  jupyter_data:
+    driver: local
+  mosquitto_data:
+    driver: local
+  mosquitto_logs:
+    driver: local
+  timescale_data:
+    driver: local

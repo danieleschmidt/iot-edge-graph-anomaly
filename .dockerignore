@@ -81,5 +81,41 @@ node_modules/
 *.pkl
 
 # Test data
-data/
-datasets/
+data/raw/
+data/temp/
+datasets/temp/
+
+# Development tools
+.pre-commit-config.yaml
+.editorconfig
+Makefile
+docker-compose*.yml
+
+# CI/CD
+.github/
+
+# Additional Python
+.nox/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+cython_debug/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Additional environments  
+.venv/
+env.bak/
+venv.bak/
+
+# Security
+.env
+*.key
+*.pem
+*.crt
+
+# Monitoring configs (should be in image)
+monitoring/
