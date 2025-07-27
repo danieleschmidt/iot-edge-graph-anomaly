@@ -1,0 +1,58 @@
+{
+    "name": "IoT Edge Graph Anomaly Detection",
+    "image": "mcr.microsoft.com/devcontainers/python:3.11",
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+        "ghcr.io/devcontainers/features/git:1": {},
+        "ghcr.io/devcontainers/features/github-cli:1": {}
+    },
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.linting.enabled": true,
+                "python.linting.pylintEnabled": false,
+                "python.linting.flake8Enabled": true,
+                "python.formatting.provider": "black",
+                "python.testing.pytestEnabled": true,
+                "python.testing.unittestEnabled": false,
+                "editor.formatOnSave": true,
+                "editor.codeActionsOnSave": {
+                    "source.organizeImports": true
+                }
+            },
+            "extensions": [
+                "ms-python.python",
+                "ms-python.flake8",
+                "ms-python.black-formatter",
+                "ms-python.isort",
+                "ms-python.mypy-type-checker",
+                "ms-vscode.vscode-yaml",
+                "redhat.vscode-yaml",
+                "ms-vscode.makefile-tools",
+                "GitHub.copilot",
+                "GitHub.vscode-pull-request-github"
+            ]
+        }
+    },
+    "postCreateCommand": "pip install -e .[dev] && pre-commit install",
+    "remoteUser": "vscode",
+    "mounts": [
+        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+    ],
+    "forwardPorts": [8000, 9090, 3000],
+    "portsAttributes": {
+        "8000": {
+            "label": "Application",
+            "onAutoForward": "notify"
+        },
+        "9090": {
+            "label": "Prometheus",
+            "onAutoForward": "ignore"
+        },
+        "3000": {
+            "label": "Grafana",
+            "onAutoForward": "ignore"
+        }
+    }
+}
