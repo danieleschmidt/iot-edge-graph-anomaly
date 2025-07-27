@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  iot-edge-anomaly-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: iot-edge-anomaly-dev
+    ports:
+      - "8080:8080"
+      - "5678:5678"  # Debug port
+    environment:
+      - LOG_LEVEL=DEBUG
+      - DEBUG=true
+      - METRICS_ENABLED=true
+      - DEVICE=cpu
+      - PYTHONPATH=/app/src
+      - PROMETHEUS_ENDPOINT=http://prometheus:9090
+    volumes:
+      - .:/app
+      - /app/.venv  # Prevent mounting over virtual env
+    working_dir: /app
+    command: ["python", "-m", "debugpy", "--listen", "0.0.0.0:5678", "--wait-for-client", "-m", "iot_edge_anomaly.main"]
+    depends_on:
+      - prometheus-dev
+    restart: "no"
+
+  prometheus-dev:
+    image: prom/prometheus:latest
+    container_name: prometheus-dev
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./monitoring/prometheus.dev.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+      - '--log.level=debug'
+    restart: unless-stopped
+
+  grafana-dev:
+    image: grafana/grafana:latest
+    container_name: grafana-dev
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=true
+      - GF_LOG_LEVEL=debug
+    volumes:
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on:
+      - prometheus-dev
+    restart: unless-stopped
+
+  jupyter:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: jupyter-dev
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - PYTHONPATH=/app/src
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--NotebookApp.token=''"]
+    restart: "no"
+
+networks:
+  default:
+    name: iot-anomaly-dev-network

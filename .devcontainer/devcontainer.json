@@ -1,0 +1,67 @@
+{
+  "name": "IoT Edge Anomaly Detection Dev Environment",
+  "image": "mcr.microsoft.com/devcontainers/python:3.10-bullseye",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.formatting.provider": "black",
+        "python.linting.enabled": true,
+        "python.linting.flake8Enabled": true,
+        "python.linting.mypyEnabled": true,
+        "python.testing.pytestEnabled": true,
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestArgs": ["tests"],
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": true
+        },
+        "files.exclude": {
+          "**/__pycache__": true,
+          "**/.pytest_cache": true,
+          "**/.mypy_cache": true,
+          "**/node_modules": true
+        }
+      },
+      "extensions": [
+        "ms-python.python",
+        "ms-python.flake8",
+        "ms-python.mypy-type-checker",
+        "ms-python.black-formatter",
+        "ms-vscode.vscode-json",
+        "redhat.vscode-yaml",
+        "ms-azuretools.vscode-docker",
+        "GitHub.copilot",
+        "ms-vscode.test-adapter-converter",
+        "littlefoxteam.vscode-python-test-adapter",
+        "ms-toolsai.jupyter"
+      ]
+    }
+  },
+
+  "forwardPorts": [8080, 8000, 3000],
+
+  "postCreateCommand": "pip install -e .[dev] && pre-commit install",
+
+  "remoteUser": "vscode",
+
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+
+  "containerEnv": {
+    "PYTHONPATH": "/workspaces/iot-edge-graph-anomaly/src",
+    "ENVIRONMENT": "development"
+  },
+
+  "workspaceFolder": "/workspaces/iot-edge-graph-anomaly",
+
+  "shutdownAction": "stopContainer"
+}
