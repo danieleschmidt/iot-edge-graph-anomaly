@@ -1,0 +1,56 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Source code files
+*.py text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.toml text eol=lf
+*.cfg text eol=lf
+*.ini text eol=lf
+
+# Documentation files
+*.md text eol=lf
+*.rst text eol=lf
+*.txt text eol=lf
+
+# Configuration files
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.editorconfig text eol=lf
+Makefile text eol=lf
+Dockerfile text eol=lf
+docker-compose.yml text eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary
+*.whl binary
+
+# Model files
+*.pkl binary
+*.pth binary
+*.pt binary
+*.h5 binary
+
+# Data files
+*.csv text eol=lf
+*.tsv text eol=lf
+*.parquet binary
+
+# Linguist overrides for proper language detection
+*.ipynb linguist-documentation
+docs/* linguist-documentation
+tests/* linguist-detectable=false

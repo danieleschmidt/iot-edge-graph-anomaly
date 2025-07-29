@@ -1,0 +1,63 @@
+# Code ownership for IoT Edge Graph Anomaly Detection
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Global ownership - all files require review from maintainers
+* @terragon-labs/maintainers
+
+# Core ML model files require ML team review
+/src/iot_edge_anomaly/models/ @terragon-labs/ml-team @terragon-labs/maintainers
+/tests/test_*model*.py @terragon-labs/ml-team
+/tests/test_*lstm*.py @terragon-labs/ml-team
+/tests/test_*gnn*.py @terragon-labs/ml-team
+
+# Performance and benchmarking require performance team
+/tests/performance/ @terragon-labs/performance-team @terragon-labs/maintainers
+/docs/PERFORMANCE_BENCHMARKS.md @terragon-labs/performance-team
+
+# Security-related files require security team review
+/docs/SECURITY.md @terragon-labs/security-team @terragon-labs/maintainers
+/docs/COMPLIANCE_FRAMEWORK.md @terragon-labs/security-team @terragon-labs/legal-team
+/.github/dependabot.yml @terragon-labs/security-team @terragon-labs/devops-team
+/renovate.json @terragon-labs/security-team @terragon-labs/devops-team
+
+# Infrastructure and deployment files
+/Dockerfile @terragon-labs/devops-team @terragon-labs/maintainers
+/docker-compose.yml @terragon-labs/devops-team
+/.github/workflows/ @terragon-labs/devops-team @terragon-labs/maintainers
+/monitoring/ @terragon-labs/devops-team @terragon-labs/sre-team
+
+# Documentation files
+/docs/ @terragon-labs/maintainers @terragon-labs/technical-writers
+/README.md @terragon-labs/maintainers @terragon-labs/technical-writers
+/CHANGELOG.md @terragon-labs/maintainers
+
+# Configuration files
+/pyproject.toml @terragon-labs/maintainers @terragon-labs/devops-team
+/requirements.txt @terragon-labs/maintainers
+/.pre-commit-config.yaml @terragon-labs/maintainers @terragon-labs/devops-team
+/Makefile @terragon-labs/maintainers @terragon-labs/devops-team
+
+# Data processing and loading
+/src/iot_edge_anomaly/data/ @terragon-labs/data-team @terragon-labs/ml-team
+/tests/test_*data*.py @terragon-labs/data-team
+/tests/test_*swat*.py @terragon-labs/data-team
+
+# Monitoring and observability
+/src/iot_edge_anomaly/monitoring/ @terragon-labs/sre-team @terragon-labs/devops-team
+/src/iot_edge_anomaly/health.py @terragon-labs/sre-team
+/tests/test_*monitoring*.py @terragon-labs/sre-team
+/tests/test_*metrics*.py @terragon-labs/sre-team
+
+# Legal and compliance
+/LICENSE @terragon-labs/legal-team @terragon-labs/maintainers
+/CODE_OF_CONDUCT.md @terragon-labs/legal-team @terragon-labs/maintainers
+/CONTRIBUTING.md @terragon-labs/maintainers @terragon-labs/community-team
+
+# Release and versioning
+/.bumpversion.cfg @terragon-labs/maintainers @terragon-labs/release-team
+/scripts/release.sh @terragon-labs/maintainers @terragon-labs/release-team
+
+# GitHub templates and automation
+/.github/ISSUE_TEMPLATE/ @terragon-labs/maintainers @terragon-labs/community-team
+/.github/PULL_REQUEST_TEMPLATE.md @terragon-labs/maintainers @terragon-labs/community-team
+/.github/release-template.md @terragon-labs/maintainers @terragon-labs/release-team

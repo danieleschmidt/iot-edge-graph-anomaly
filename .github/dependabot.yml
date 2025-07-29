@@ -1,0 +1,67 @@
+version: 2
+updates:
+  # Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "America/Los_Angeles"
+    assignees:
+      - "terragon-labs/maintainers"
+    reviewers:
+      - "terragon-labs/maintainers"
+    labels:
+      - "dependencies"
+      - "python"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    open-pull-requests-limit: 5
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+    ignore:
+      - dependency-name: "torch"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "torch-geometric"
+        update-types: ["version-update:semver-major"]
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "America/Los_Angeles"
+    assignees:
+      - "terragon-labs/devops-team"
+    reviewers:
+      - "terragon-labs/devops-team"
+    labels:
+      - "dependencies"
+      - "ci/cd"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+
+  # Docker dependencies
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "06:00"
+      timezone: "America/Los_Angeles"
+    assignees:
+      - "terragon-labs/devops-team"
+    reviewers:
+      - "terragon-labs/devops-team"
+    labels:
+      - "dependencies"
+      - "docker"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
