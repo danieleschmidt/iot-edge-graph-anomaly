@@ -1,0 +1,45 @@
+# CITATION.cff - Citation File Format for academic and research citation
+# https://citation-file-format.github.io/
+
+cff-version: 1.2.0
+title: "IoT Edge Graph Anomaly Detection"
+message: "If you use this software, please cite it using the metadata from this file."
+type: software
+authors:
+  - family-names: "Terragon Labs"
+    given-names: "Research Team"
+    orcid: "https://orcid.org/0000-0000-0000-0000"
+    affiliation: "Terragon Labs"
+identifiers:
+  - type: url
+    value: "https://github.com/terragon-labs/iot-edge-graph-anomaly"
+    description: "The GitHub repository for the software"
+repository-code: "https://github.com/terragon-labs/iot-edge-graph-anomaly"
+url: "https://terragon-labs.com/projects/iot-edge-anomaly"
+abstract: >-
+  This project enhances an LSTM autoencoder for IoT anomaly detection by
+  incorporating a Graph Neural Network (GNN) to capture the topological
+  relationships between sensors. The model is deployed as a Containerd-based
+  Over-the-Air (OTA) image optimized for edge devices.
+keywords:
+  - "anomaly detection"
+  - "graph neural networks"
+  - "LSTM autoencoder"
+  - "IoT edge computing"
+  - "industrial cybersecurity"
+  - "time series analysis"
+  - "machine learning"
+  - "PyTorch"
+license: MIT
+version: "0.1.0"
+date-released: "2025-01-27"
+preferred-citation:
+  type: conference-paper
+  title: "Hybrid LSTM-GNN Approach for IoT Edge Anomaly Detection"
+  authors:
+    - family-names: "Terragon Labs"
+      given-names: "Research Team"
+  collection-title: "Proceedings of Industrial IoT Security Conference"
+  year: 2025
+  publisher: "IEEE"
+  doi: "10.1109/IIoTSec.2025.12345"

@@ -1,0 +1,71 @@
+# Gitpod configuration for cloud development environment
+# https://www.gitpod.io/docs/references/gitpod-yml
+
+image:
+  file: .gitpod.Dockerfile
+
+# Commands to run on workspace startup
+tasks:
+  - name: Setup Development Environment
+    init: |
+      # Install Python dependencies
+      python -m pip install --upgrade pip
+      pip install -e .[dev,test]
+      
+      # Install pre-commit hooks
+      pre-commit install
+      
+      # Generate initial coverage report
+      make test-coverage
+    command: |
+      echo "🚀 Development environment ready!"
+      echo "📋 Available commands:"
+      echo "  make help     - Show all available commands"
+      echo "  make test     - Run tests"
+      echo "  make lint     - Run linting"
+      echo "  make dev      - Start development server"
+
+  - name: Background Services
+    command: |
+      # Start monitoring services if needed
+      if [ -f "docker-compose.yml" ]; then
+        docker-compose up -d monitoring
+      fi
+
+# VS Code extensions to install
+vscode:
+  extensions:
+    - ms-python.python
+    - ms-python.pylint
+    - ms-python.black-formatter
+    - ms-python.mypy-type-checker
+    - ms-toolsai.jupyter
+    - GitHub.copilot
+    - GitHub.vscode-pull-request-github
+    - eamodio.gitlens
+    - ms-vscode.vscode-json
+    - redhat.vscode-yaml
+    - ms-vscode-remote.remote-containers
+
+# Port configurations
+ports:
+  - name: Development Server
+    port: 8000
+    onOpen: notify
+  - name: Jupyter Lab
+    port: 8888
+    onOpen: open-preview
+  - name: Monitoring Dashboard
+    port: 3000
+    onOpen: notify
+
+# GitHub integration
+github:
+  prebuilds:
+    master: true
+    branches: true
+    pullRequests: true
+    pullRequestsFromForks: true
+    addCheck: true
+    addComment: false
+    addBadge: true

@@ -1,0 +1,65 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: IoT Edge Anomaly Detection",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/iot_edge_anomaly/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "args": ["--config", "config/development.yaml"]
+        },
+        {
+            "name": "Python: Run Tests",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "-v",
+                "--cov=src",
+                "--cov-report=html",
+                "tests/"
+            ]
+        },
+        {
+            "name": "Python: Performance Tests",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "-v",
+                "-m", "performance",
+                "tests/performance/"
+            ]
+        },
+        {
+            "name": "Python: Debug Model Training",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/iot_edge_anomaly/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "LOG_LEVEL": "DEBUG"
+            },
+            "args": ["--mode", "train", "--debug"]
+        },
+        {
+            "name": "Docker: Build and Debug",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/debug_container.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
