@@ -1,0 +1,35 @@
+# GitHub Sponsors funding configuration
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+
+# Replace with up to 4 GitHub sponsors usernames
+github: [terragon-labs]
+
+# Replace with up to one Patreon username
+# patreon: username
+
+# Replace with up to one Open Collective username
+# open_collective: username
+
+# Replace with up to one Ko-fi username
+# ko_fi: username
+
+# Replace with up to one Tidelift package name
+# tidelift: npm/package-name
+
+# Replace with up to one Community Bridge project name
+# community_bridge: project-name
+
+# Replace with up to one Liberapay username
+# liberapay: username
+
+# Replace with up to one IssueHunt username
+# issuehunt: username
+
+# Replace with up to one Otechie username
+# otechie: username
+
+# Replace with up to one LFX Mentorship project name
+# lfx_crowdfunding: project-name
+
+# Replace with a custom funding URL
+# custom: ['https://terragon-labs.com/sponsor', 'https://donate.terragon-labs.com']
