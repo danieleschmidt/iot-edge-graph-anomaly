@@ -1,0 +1,62 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base",
+    ":dependencyDashboard",
+    ":semanticCommits",
+    ":automergeDigest"
+  ],
+  "labels": ["dependencies"],
+  "assignees": ["@terragon-labs/maintainers"],
+  "reviewers": ["@terragon-labs/maintainers"],
+  "separateMinorPatch": true,
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "timezone": "America/Los_Angeles",
+  "schedule": ["before 6am on monday"],
+  "packageRules": [
+    {
+      "matchCategories": ["python"],
+      "rangeStrategy": "bump"
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "matchPackageNames": ["torch", "torch-geometric"],
+      "groupName": "PyTorch ML Framework",
+      "reviewers": ["@terragon-labs/ml-team"]
+    },
+    {
+      "matchPackageNames": ["opentelemetry-api", "opentelemetry-sdk", "opentelemetry-exporter-otlp"],
+      "groupName": "OpenTelemetry"
+    },
+    {
+      "matchPackageNames": ["pytest", "pytest-cov", "pytest-mock", "pytest-xdist"],
+      "groupName": "pytest testing framework"
+    },
+    {
+      "matchPackageNames": ["black", "flake8", "mypy", "isort"],
+      "groupName": "Python code quality tools"
+    },
+    {
+      "matchDepTypes": ["action"],
+      "semanticCommitType": "ci"
+    }
+  ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on sunday"]
+  },
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "assignees": ["@terragon-labs/security-team"],
+    "labels": ["security", "high-priority"]
+  },
+  "python": {
+    "ignorePaths": ["tests/**", "docs/**"]
+  }
+}
