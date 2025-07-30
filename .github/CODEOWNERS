@@ -19,6 +19,10 @@
 /docs/COMPLIANCE_FRAMEWORK.md @terragon-labs/security-team @terragon-labs/legal-team
 /.github/dependabot.yml @terragon-labs/security-team @terragon-labs/devops-team
 /renovate.json @terragon-labs/security-team @terragon-labs/devops-team
+/.trivy.yaml @terragon-labs/security-team @terragon-labs/devops-team
+/.hadolint.yaml @terragon-labs/security-team @terragon-labs/devops-team
+/.github/security.md @terragon-labs/security-team @terragon-labs/maintainers
+/scripts/compliance_check.py @terragon-labs/security-team @terragon-labs/maintainers
 
 # Infrastructure and deployment files
 /Dockerfile @terragon-labs/devops-team @terragon-labs/maintainers
@@ -36,6 +40,8 @@
 /requirements.txt @terragon-labs/maintainers
 /.pre-commit-config.yaml @terragon-labs/maintainers @terragon-labs/devops-team
 /Makefile @terragon-labs/maintainers @terragon-labs/devops-team
+/sonar-project.properties @terragon-labs/devops-team @terragon-labs/maintainers
+/.vscode/ @terragon-labs/maintainers @terragon-labs/devops-team
 
 # Data processing and loading
 /src/iot_edge_anomaly/data/ @terragon-labs/data-team @terragon-labs/ml-team
