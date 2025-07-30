@@ -1,0 +1,72 @@
+# Trivy Security Scanner Configuration for Advanced Container Scanning
+# Optimized for ML/IoT edge deployment security
+
+# Cache configuration for performance
+cache:
+  clear: false
+  backend: fs
+  ttl: 24h0m0s
+
+# Output configuration
+format: sarif
+output: trivy-results.sarif
+
+# Severity levels for production deployment
+severity: HIGH,CRITICAL,MEDIUM
+
+# Vulnerability configuration
+vulnerability:
+  ignore-unfixed: false
+  ignore-statuses:
+    - end_of_life
+  # Custom ignore patterns for ML dependencies
+  ignore-cves:
+    # PyTorch ecosystem known false positives
+    - CVE-2007-4559  # tarfile - mitigated by secure extraction
+
+# Secret scanning configuration  
+secret:
+  config: .trivyignore-secrets
+
+# License scanning for compliance
+license:
+  forbidden:
+    - GPL-2.0
+    - GPL-3.0
+    - AGPL-1.0
+    - AGPL-3.0
+  
+# Misconfiguration scanning
+misconfig:
+  include-non-failures: false
+  trace: false
+
+# File pattern exclusions
+skip-files:
+  - "**/.git/**"
+  - "**/tests/**"
+  - "**/__pycache__/**"
+  - "**/venv/**"
+  - "**/.pytest_cache/**"
+
+# Skip specific checks for ML workloads
+skip-dirs:
+  - "tests"
+  - "docs"
+  - ".git"
+
+# Database configuration
+db:
+  skip-update: false
+  java-skip-update: false
+  
+# Policy configuration for custom rules
+policy:
+  bundle-repository: ""
+  policy-namespaces: []
+
+# Timeout settings
+timeout: 5m0s
+
+# Quiet mode for CI/CD
+quiet: false

@@ -1,0 +1,35 @@
+# Hadolint Configuration for Container Security and Best Practices
+# Advanced container linting for production-ready IoT edge deployments
+
+ignored:
+  # Allow specific packages for ML/IoT workloads
+  - DL3008  # Pin versions in apt get install (handled by base images)
+  - DL3013  # Pin versions in pip (handled by requirements.txt)
+
+failure-threshold: warning
+
+format: json
+
+strict-labels: true
+
+# Disable rules that conflict with multi-stage builds
+override:
+  warning:
+    - DL3059  # Multiple consecutive RUN instructions
+  error:
+    - DL3025  # Use arguments JSON notation for CMD and ENTRYPOINT arguments
+    - DL3002  # Last USER should not be root
+    - DL4006  # Set the SHELL option -o pipefail before any RUN command
+    
+# Trusted registries for base images
+trusted-registries:
+  - docker.io
+  - gcr.io
+  - quay.io
+  - registry-1.docker.io
+
+# Security-focused rules for edge deployment
+require-labels:
+  - maintainer
+  - version
+  - description

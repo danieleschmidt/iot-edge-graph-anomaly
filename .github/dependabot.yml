@@ -12,6 +12,7 @@ updates:
       - "terragon-labs/maintainers"
     reviewers:
       - "terragon-labs/maintainers"
+      - "terragon-labs/security-team"
     labels:
       - "dependencies"
       - "python"
@@ -22,6 +23,29 @@ updates:
     allow:
       - dependency-type: "direct"
       - dependency-type: "indirect"
+    # Group related dependencies for cleaner PRs
+    groups:
+      pytorch-ecosystem:
+        patterns:
+          - "torch*"
+          - "torchvision"
+          - "torchaudio"
+          - "torch-geometric"
+      security-tools:
+        patterns:
+          - "bandit"
+          - "safety"
+          - "pip-audit"
+        update-types:
+          - "security-update"
+      testing-framework:
+        patterns:
+          - "pytest*"
+          - "coverage"
+      monitoring-stack:
+        patterns:
+          - "opentelemetry*"
+          - "prometheus*"
     ignore:
       - dependency-name: "torch"
         update-types: ["version-update:semver-major"]
