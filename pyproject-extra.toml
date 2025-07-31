@@ -1,0 +1,219 @@
+# Advanced PyProject Configuration Extensions
+# This file contains cutting-edge Python tooling configurations
+# for an ADVANCED repository (92% SDLC maturity)
+
+[tool.ruff]
+# Modern Python linter/formatter (faster alternative to flake8+black)
+target-version = "py38"
+line-length = 88
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "S",   # flake8-bandit
+    "T20", # flake8-print
+    "PT",  # flake8-pytest-style
+    "Q",   # flake8-quotes
+]
+ignore = [
+    "S101",   # Use of `assert` detected
+    "S311",   # Standard pseudo-random generators are not suitable for security/cryptographic purposes
+    "E501",   # Line too long (handled by black)
+]
+exclude = [
+    ".git",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    "build",
+    "dist",
+    ".venv",
+]
+
+[tool.ruff.per-file-ignores]
+"tests/*" = ["S101", "T20"]  # Allow asserts and prints in tests
+
+[tool.ruff.mccabe]
+max-complexity = 10
+
+[tool.pyright]
+# Advanced type checking configuration
+include = ["src"]
+exclude = [
+    "**/node_modules",
+    "**/__pycache__",
+    ".venv",
+    "build",
+    "dist"
+]
+defineConstant = { DEBUG = true }
+pythonVersion = "3.8"
+pythonPlatform = "Linux"
+typeCheckingMode = "strict"
+reportMissingImports = true
+reportMissingTypeStubs = false
+reportGeneralTypeIssues = true
+reportPropertyTypeMismatch = true
+reportFunctionMemberAccess = true
+reportPrivateUsage = true
+reportConstantRedefinition = true
+reportIncompatibleMethodOverride = true
+reportIncompatibleVariableOverride = true
+reportInconsistentConstructor = true
+reportOverlappingOverload = true
+reportMissingSuperCall = false
+reportUninitializedInstanceVariable = true
+reportInvalidStringEscapeSequence = true
+reportUnknownParameterType = true
+reportUnknownArgumentType = false
+reportUnknownLambdaType = false
+reportUnknownVariableType = false
+reportUnknownMemberType = false
+reportMissingParameterType = true
+reportMissingTypeArgument = true
+reportInvalidTypeVarUse = true
+reportCallInDefaultInitializer = false
+reportUnnecessaryIsInstance = true
+reportUnnecessaryCast = true
+reportUnnecessaryComparison = true
+reportAssertAlwaysTrue = true
+reportSelfClsParameterName = true
+reportImplicitStringConcatenation = false
+reportUndefinedVariable = true
+reportUnboundVariable = true
+reportInvalidStubStatement = true
+
+[tool.vulture]
+# Dead code detection
+min_confidence = 80
+paths = ["src", "tests"]
+exclude = ["*migrations*"]
+ignore_decorators = ["@app.route", "@require_*"]
+ignore_names = ["_*", "setUp", "tearDown", "test_*"]
+
+[tool.interrogate]
+# Docstring coverage
+ignore-init-method = true
+ignore-init-module = false
+ignore-magic = false
+ignore-semiprivate = false
+ignore-private = false
+ignore-property-decorators = false
+ignore-module = false
+fail-under = 80
+exclude = ["setup.py", "docs", "build"]
+ignore-regex = ["^get$", "^mock_.*", ".*BaseClass.*"]
+verbose = 0
+quiet = false
+whitelist-regex = []
+color = true
+
+[tool.semantic_release]
+# Automated versioning and changelog generation
+version_toml = "pyproject.toml:project.version"
+version_variable = "src/iot_edge_anomaly/__init__.py:__version__"
+build_command = "python -m build"
+dist_path = "dist/"
+upload_to_repository = false
+upload_to_release = true
+remove_dist = false
+patch_without_tag = false
+major_on_zero = true
+branch = "main"
+hvcs = "github"
+commit_author = "semantic-release <semantic-release>"
+commit_message = "chore(release): v{version} [skip ci]"
+
+[tool.semantic_release.changelog]
+template_dir = "templates"
+changelog_file = "CHANGELOG.md"
+exclude_commit_patterns = [
+    "^docs:",
+    "^test:",
+    "^chore:",
+    "Merge pull request .*"
+]
+
+[tool.semantic_release.commit_parser_options]
+allowed_tags = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "style", "refactor", "test"]
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf"]
+
+[tool.nitpick]
+# Project configuration enforcement
+style = [
+    "github://andreoliwa/nitpick-python/styles/black.toml",
+    "github://andreoliwa/nitpick-python/styles/flake8.toml",
+    "github://andreoliwa/nitpick-python/styles/isort.toml",
+    "github://andreoliwa/nitpick-python/styles/mypy.toml",
+    "github://andreoliwa/nitpick-python/styles/pre-commit-python.toml",
+    "github://andreoliwa/nitpick-python/styles/pytest.toml"
+]
+
+[tool.refurb]
+# Modern Python idiom suggestions
+python_version = "3.8"
+ignore = ["FURB101"]  # Allow explicit string reads
+
+[tool.tryceratops]
+# Exception handling best practices
+exclude = ["tests/"]
+ignore = ["TC101"]  # Allow except Exception
+
+[tool.cruft]
+# Template synchronization for advanced projects
+skip = [".git/*", "*.pyc", "__pycache__"]
+
+[tool.setuptools-scm]
+# Advanced versioning from git tags
+write_to = "src/iot_edge_anomaly/_version.py"
+write_to_template = '''
+# This file is automatically generated by setuptools-scm
+__version__ = "{version}"
+__version_tuple__ = {version_tuple}
+'''
+fallback_version = "0.0.0"
+
+[tool.pytest.ini_options.advanced]
+# Advanced testing configurations
+addopts = [
+    "--strict-markers",
+    "--strict-config", 
+    "--cov=src",
+    "--cov-report=term-missing:skip-covered",
+    "--cov-report=html:htmlcov",
+    "--cov-report=xml:coverage.xml",
+    "--cov-report=lcov:coverage.lcov",
+    "--cov-fail-under=85",
+    "--cov-branch",
+    "--cov-context=test",
+    "--durations=10",
+    "--tb=short",
+    "--disable-warnings",
+    "--maxfail=3",
+    "--reruns=2",
+    "--reruns-delay=1",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests", 
+    "e2e: marks tests as end-to-end tests",
+    "benchmark: marks tests as performance benchmarks",
+    "security: marks tests as security tests",
+    "flaky: marks tests as potentially flaky",
+    "gpu: marks tests requiring GPU",
+    "memory_intensive: marks tests using significant memory",
+    "network: marks tests requiring network access"
+]
+filterwarnings = [
+    "error",
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning"
+]
