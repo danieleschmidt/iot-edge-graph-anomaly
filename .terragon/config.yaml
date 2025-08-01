@@ -1,0 +1,113 @@
+# Terragon Autonomous SDLC Configuration
+# Repository: iot-edge-graph-anomaly
+# Maturity Level: ADVANCED (92%)
+
+metadata:
+  repository_name: "iot-edge-graph-anomaly"
+  maturity_level: "advanced"
+  maturity_score: 92
+  assessment_date: "2025-08-01"
+  next_assessment: "2025-11-01"
+
+scoring:
+  weights:
+    advanced:
+      wsjf: 0.5          # Weighted Shortest Job First
+      ice: 0.1           # Impact/Confidence/Ease  
+      technicalDebt: 0.3 # Technical debt priority
+      security: 0.1      # Security enhancement boost
+  
+  thresholds:
+    minScore: 15           # Minimum composite score for execution
+    maxRisk: 0.8          # Maximum risk tolerance
+    securityBoost: 2.0    # Security vulnerability multiplier
+    complianceBoost: 1.8  # Compliance issue multiplier
+    debtBoost: 1.5        # Technical debt multiplier
+
+discovery:
+  sources:
+    - gitHistory          # TODO/FIXME comments, commit messages
+    - staticAnalysis      # Code quality and complexity metrics
+    - issueTrackers       # GitHub issues and discussions
+    - vulnerabilityDatabases # CVE and security advisories
+    - performanceMonitoring # Runtime metrics and benchmarks
+    - dependencyUpdates   # Package and security updates
+    - codeReviews        # PR feedback and suggestions
+  
+  tools:
+    staticAnalysis:
+      - mypy             # Type checking
+      - flake8           # Code style and quality
+      - bandit           # Security analysis
+      - sonarqube        # Code quality metrics
+      - pytest-cov      # Coverage analysis
+    
+    security:
+      - safety           # Python package vulnerabilities
+      - pip-audit        # Dependency security audit
+      - trivy            # Container security scanning
+      - codeql           # Code security analysis
+    
+    performance:
+      - pytest-benchmark # Performance regression testing
+      - memory-profiler  # Memory usage analysis
+      - py-spy           # CPU profiling
+
+execution:
+  schedule:
+    immediate: "on_pr_merge"    # Immediate value discovery
+    hourly: "security_scan"     # Security vulnerability checks
+    daily: "comprehensive"      # Full static analysis
+    weekly: "deep_review"       # Architecture and performance
+    monthly: "strategic"        # Strategic alignment review
+  
+  constraints:
+    maxConcurrentTasks: 1       # One autonomous task at a time
+    maxExecutionTime: "2h"      # Maximum time per task
+    testRequirements:
+      minCoverage: 80           # Minimum code coverage
+      performanceRegression: 5  # Max 5% performance regression
+    
+  rollbackTriggers:
+    - testFailure               # Any test failure
+    - buildFailure             # Build process failure
+    - securityViolation        # Security scan failure
+    - performanceRegression    # Significant performance drop
+
+# Value tracking configuration
+valueTracking:
+  metrics:
+    - buildSuccessRate
+    - securityScanPassRate
+    - performanceRegressionRate
+    - codeReviewTime
+    - complianceScore
+    - technicalDebtReduction
+    - developerSatisfaction
+  
+  targets:
+    buildSuccessRate: 0.95
+    securityScanPassRate: 0.90
+    performanceRegressionRate: 0.05
+    codeReviewTime: "24h"
+    complianceScore: 0.85
+
+# Repository-specific configuration
+repository:
+  primaryLanguage: "python"
+  framework: "pytorch"
+  deploymentTarget: "edge"
+  industryContext: "industrial_iot"
+  
+  constraints:
+    memoryLimit: "100MB"      # Edge device memory constraint
+    cpuLimit: "25%"           # CPU usage limit on Raspberry Pi 4
+    inferenceLatency: "10ms"  # Maximum inference time
+    imageSize: "100MB"        # Container image size limit
+  
+  priorities:
+    - security                # Security vulnerabilities
+    - performance            # Edge device performance
+    - compliance             # Industrial IoT compliance
+    - maintainability        # Code quality and debt
+    - documentation          # Knowledge management
