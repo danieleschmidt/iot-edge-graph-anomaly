@@ -1,0 +1,316 @@
+groups:
+  # Critical alerts that require immediate attention
+  - name: iot_edge_critical
+    interval: 30s
+    rules:
+      # Application availability
+      - alert: ApplicationDown
+        expr: up{job="iot-edge-anomaly"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/app-down"
+        annotations:
+          summary: "IoT Edge Anomaly Detection service is down"
+          description: "The IoT Edge Anomaly Detection service on {{ $labels.instance }} has been down for more than 1 minute."
+          dashboard: "https://grafana.company.com/d/iot-edge/overview"
+
+      # Memory usage critical
+      - alert: HighMemoryUsage
+        expr: |
+          (
+            memory_usage_bytes / memory_limit_bytes * 100 > 90
+          ) and on(instance) up{job="iot-edge-anomaly"}
+        for: 2m
+        labels:
+          severity: critical
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/high-memory"
+        annotations:
+          summary: "Critical memory usage on {{ $labels.device_id }}"
+          description: "Memory usage is {{ $value | humanizePercentage }} on device {{ $labels.device_id }}, exceeding 90% threshold."
+
+      # Model inference failures
+      - alert: ModelInferenceFailures
+        expr: |
+          (
+            rate(inference_errors_total[5m]) > 0.1
+          ) and on(instance) up{job="iot-edge-anomaly"}
+        for: 1m
+        labels:
+          severity: critical
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/inference-failures"
+        annotations:
+          summary: "High model inference failure rate on {{ $labels.device_id }}"
+          description: "Inference failure rate is {{ $value | humanize }} errors/sec on device {{ $labels.device_id }}, exceeding 0.1/sec threshold."
+
+      # Critical anomaly rate spike
+      - alert: CriticalAnomalyRateSpike
+        expr: |
+          (
+            rate(anomalies_detected_total[5m]) > 1.0
+          ) and on(instance) up{job="iot-edge-anomaly"}
+        for: 2m
+        labels:
+          severity: critical
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/anomaly-spike"
+        annotations:
+          summary: "Critical anomaly detection rate spike on {{ $labels.device_id }}"
+          description: "Anomaly rate is {{ $value | humanize }} anomalies/sec on device {{ $labels.device_id }}, exceeding 1.0/sec critical threshold."
+
+      # Disk space critical
+      - alert: DiskSpaceCritical
+        expr: |
+          (
+            disk_usage_percent > 95
+          ) and on(instance) up{job="iot-edge-anomaly"}
+        for: 1m
+        labels:
+          severity: critical
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/disk-space"
+        annotations:
+          summary: "Critical disk space usage on {{ $labels.device_id }}"
+          description: "Disk usage is {{ $value }}% on device {{ $labels.device_id }}, exceeding 95% critical threshold."
+
+  # Warning alerts that need attention but are not critical
+  - name: iot_edge_warnings
+    interval: 60s
+    rules:
+      # High inference latency
+      - alert: HighInferenceLatency
+        expr: |
+          (
+            histogram_quantile(0.95, rate(inference_duration_seconds_bucket[5m])) > 0.01
+          ) and on(instance) up{job="iot-edge-anomaly"}
+        for: 5m
+        labels:
+          severity: warning
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/high-latency"
+        annotations:
+          summary: "High inference latency on {{ $labels.device_id }}"
+          description: "95th percentile inference latency is {{ $value | humanizeDuration }} on device {{ $labels.device_id }}, exceeding 10ms threshold."
+
+      # Model drift detection
+      - alert: ModelDriftDetected
+        expr: |
+          (
+            model_drift_score > 0.7
+          ) and on(instance) up{job="iot-edge-anomaly"}
+        for: 10m
+        labels:
+          severity: warning
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/model-drift"
+        annotations:
+          summary: "Model drift detected on {{ $labels.device_id }}"
+          description: "Model drift score is {{ $value }} on device {{ $labels.device_id }}, exceeding 0.7 threshold. Consider model retraining."
+
+      # Warning anomaly rate spike
+      - alert: AnomalyRateSpike
+        expr: |
+          (
+            rate(anomalies_detected_total[5m]) > 0.5
+          ) and on(instance) up{job="iot-edge-anomaly"}
+        for: 5m
+        labels:
+          severity: warning
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/anomaly-spike"
+        annotations:
+          summary: "Anomaly detection rate spike on {{ $labels.device_id }}"
+          description: "Anomaly rate is {{ $value | humanize }} anomalies/sec on device {{ $labels.device_id }}, exceeding 0.5/sec warning threshold."
+
+      # High CPU usage
+      - alert: HighCpuUsage
+        expr: |
+          (
+            cpu_usage_percent > 80
+          ) and on(instance) up{job="iot-edge-anomaly"}
+        for: 5m
+        labels:
+          severity: warning
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/high-cpu"
+        annotations:
+          summary: "High CPU usage on {{ $labels.device_id }}"
+          description: "CPU usage is {{ $value }}% on device {{ $labels.device_id }}, exceeding 80% threshold."
+
+      # Model accuracy degradation
+      - alert: ModelAccuracyDegradation
+        expr: |
+          (
+            model_accuracy_ratio < 0.85
+          ) and on(instance) up{job="iot-edge-anomaly"}
+        for: 10m
+        labels:
+          severity: warning
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/accuracy-degradation"
+        annotations:
+          summary: "Model accuracy degradation on {{ $labels.device_id }}"
+          description: "Model accuracy is {{ $value | humanizePercentage }} on device {{ $labels.device_id }}, below 85% threshold."
+
+      # High error rate
+      - alert: HighErrorRate
+        expr: |
+          (
+            rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+          ) and on(instance) up{job="iot-edge-anomaly"}
+        for: 3m
+        labels:
+          severity: warning
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/high-error-rate"
+        annotations:
+          summary: "High error rate on {{ $labels.device_id }}"
+          description: "HTTP error rate is {{ $value | humanizePercentage }} on device {{ $labels.device_id }}, exceeding 5% threshold."
+
+  # Performance monitoring alerts
+  - name: iot_edge_performance
+    interval: 120s
+    rules:
+      # Low throughput
+      - alert: LowThroughput
+        expr: |
+          (
+            rate(samples_processed_total[5m]) < 10
+          ) and on(instance) up{job="iot-edge-anomaly"}
+        for: 10m
+        labels:
+          severity: info
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/low-throughput"
+        annotations:
+          summary: "Low data processing throughput on {{ $labels.device_id }}"
+          description: "Data processing rate is {{ $value | humanize }} samples/sec on device {{ $labels.device_id }}, below 10/sec expected rate."
+
+      # Memory leak detection
+      - alert: PossibleMemoryLeak
+        expr: |
+          (
+            increase(memory_usage_bytes[1h]) > 50000000  # 50MB increase
+          ) and on(instance) up{job="iot-edge-anomaly"}
+        for: 30m
+        labels:
+          severity: warning
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/memory-leak"
+        annotations:
+          summary: "Possible memory leak detected on {{ $labels.device_id }}"
+          description: "Memory usage increased by {{ $value | humanizeBytes }} over the last hour on device {{ $labels.device_id }}."
+
+      # Slow startup time
+      - alert: SlowStartup
+        expr: |
+          (
+            application_startup_duration_seconds > 30
+          ) and on(instance) up{job="iot-edge-anomaly"}
+        for: 1m
+        labels:
+          severity: info
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/slow-startup"
+        annotations:
+          summary: "Slow application startup on {{ $labels.device_id }}"
+          description: "Application startup took {{ $value | humanizeDuration }} on device {{ $labels.device_id }}, exceeding 30s threshold."
+
+  # Business logic alerts
+  - name: iot_edge_business
+    interval: 300s
+    rules:
+      # No data received
+      - alert: NoDataReceived
+        expr: |
+          (
+            increase(samples_processed_total[15m]) == 0
+          ) and on(instance) up{job="iot-edge-anomaly"}
+        for: 15m
+        labels:
+          severity: warning
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/no-data"
+        annotations:
+          summary: "No data received on {{ $labels.device_id }}"
+          description: "No sensor data has been processed for 15 minutes on device {{ $labels.device_id }}. Check sensor connectivity."
+
+      # Alert frequency too high
+      - alert: AlertFrequencyHigh
+        expr: |
+          (
+            rate(alerts_generated_total[1h]) > 10
+          ) and on(instance) up{job="iot-edge-anomaly"}
+        for: 30m
+        labels:
+          severity: info
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/alert-frequency"
+        annotations:
+          summary: "High alert generation frequency on {{ $labels.device_id }}"
+          description: "Alert generation rate is {{ $value | humanize }} alerts/hour on device {{ $labels.device_id }}, exceeding 10/hour threshold."
+
+      # Model version mismatch
+      - alert: ModelVersionMismatch
+        expr: |
+          count by (model_version) (up{job="iot-edge-anomaly"}) > 1
+        for: 5m
+        labels:
+          severity: info
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/version-mismatch"
+        annotations:
+          summary: "Multiple model versions detected"
+          description: "Multiple model versions are running simultaneously: {{ $labels.model_version }}. Ensure consistent deployment."
+
+  # Security alerts
+  - name: iot_edge_security
+    interval: 300s
+    rules:
+      # Failed authentication attempts
+      - alert: FailedAuthenticationAttempts
+        expr: |
+          (
+            rate(authentication_failures_total[5m]) > 0.1
+          ) and on(instance) up{job="iot-edge-anomaly"}
+        for: 2m
+        labels:
+          severity: warning
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/auth-failures"
+        annotations:
+          summary: "High authentication failure rate on {{ $labels.device_id }}"
+          description: "Authentication failure rate is {{ $value | humanize }} failures/sec on device {{ $labels.device_id }}."
+
+      # Unusual network activity
+      - alert: UnusualNetworkActivity
+        expr: |
+          (
+            rate(network_bytes_total[5m]) > 1000000  # 1MB/sec
+          ) and on(instance) up{job="iot-edge-anomaly"}
+        for: 10m
+        labels:
+          severity: info
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/network-activity"
+        annotations:
+          summary: "Unusual network activity on {{ $labels.device_id }}"
+          description: "Network throughput is {{ $value | humanizeBytes }}/sec on device {{ $labels.device_id }}, exceeding normal patterns."
+
+      # Certificate expiration
+      - alert: CertificateExpiringSoon
+        expr: |
+          (
+            (certificate_expiry_timestamp - time()) / 86400 < 30
+          ) and on(instance) up{job="iot-edge-anomaly"}
+        for: 1m
+        labels:
+          severity: warning
+          service: iot-edge-anomaly
+          runbook: "https://docs.company.com/runbooks/cert-expiry"
+        annotations:
+          summary: "Certificate expiring soon on {{ $labels.device_id }}"
+          description: "Certificate expires in {{ $value | humanizeDuration }} on device {{ $labels.device_id }}. Renewal required."

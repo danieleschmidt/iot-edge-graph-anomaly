@@ -1,0 +1,54 @@
+{
+  "name": "iot-edge-graph-anomaly",
+  "version": "0.1.0",
+  "description": "IoT Edge Graph Anomaly Detection using LSTM-GNN hybrid model",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danieleschmidt/iot-edge-graph-anomaly.git"
+  },
+  "scripts": {
+    "install": "pip install -e .",
+    "install:dev": "pip install -e .[dev]",
+    "test": "pytest tests/",
+    "test:unit": "pytest tests/ -m unit",
+    "test:integration": "pytest tests/ -m integration", 
+    "test:e2e": "pytest tests/ -m e2e",
+    "test:watch": "pytest-watch tests/",
+    "test:coverage": "pytest --cov=src --cov-report=html --cov-report=term",
+    "lint": "flake8 src tests && mypy src",
+    "lint:fix": "black src tests && isort src tests",
+    "format": "black src tests && isort src tests",
+    "type-check": "mypy src",
+    "security-check": "bandit -r src && safety check && pip-audit",
+    "pre-commit": "pre-commit run --all-files",
+    "build": "python -m build",
+    "clean": "rm -rf build/ dist/ *.egg-info/ .pytest_cache/ .mypy_cache/ htmlcov/ .coverage",
+    "dev": "python -m iot_edge_anomaly.main",
+    "docker:build": "docker build -t iot-edge-graph-anomaly .",
+    "docker:run": "docker run --rm -p 8080:8080 iot-edge-graph-anomaly",
+    "docker:dev": "docker-compose up --build",
+    "docker:stop": "docker-compose down",
+    "docs:build": "sphinx-build -b html docs/ docs/_build/html",
+    "docs:serve": "sphinx-autobuild docs/ docs/_build/html --host 0.0.0.0 --port 8000",
+    "benchmark": "python benchmarks.py",
+    "health-check": "curl -f http://localhost:8080/health || exit 1"
+  },
+  "keywords": [
+    "iot",
+    "anomaly-detection", 
+    "edge-computing",
+    "lstm",
+    "gnn",
+    "pytorch",
+    "machine-learning",
+    "industrial-iot",
+    "time-series"
+  ],
+  "author": "Terragon Labs",
+  "license": "Apache-2.0",
+  "engines": {
+    "python": ">=3.8"
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}
