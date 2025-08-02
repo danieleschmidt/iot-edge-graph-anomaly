@@ -1,8 +1,22 @@
-# Version control
+# Git and version control
 .git
 .gitignore
+.gitattributes
 
-# Python
+# Documentation
+README.md
+docs/
+*.md
+
+# Development and testing
+tests/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Python cache and build artifacts
 __pycache__/
 *.py[cod]
 *$py.class
@@ -26,33 +40,25 @@ wheels/
 MANIFEST
 
 # Virtual environments
+.env
+.envrc
+.venv
 venv/
-env/
 ENV/
+env/
+env.bak/
+venv.bak/
 
-# IDE
+# IDE and editor files
 .vscode/
 .idea/
-*.swp
-*.swo
+*.sublime-project
+*.sublime-workspace
 *~
+.*.swp
+.*.swo
 
-# Testing
-.tox/
-.coverage
-.pytest_cache/
-htmlcov/
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-
-# Documentation
-docs/_build/
-.sphinx/
-
-# OS
+# OS generated files
 .DS_Store
 .DS_Store?
 ._*
@@ -61,61 +67,70 @@ docs/_build/
 ehthumbs.db
 Thumbs.db
 
-# Logs
+# Logs and temporary files
 *.log
 logs/
+tmp/
+temp/
+.tmp/
 
-# Temporary files
-*.tmp
-*.bak
-*.swp
-*~.nib
-
-# Node modules (if any)
-node_modules/
-
-# Large model files (should be downloaded at runtime)
-*.pt
-*.pth
-*.h5
-*.pkl
-
-# Test data
-data/raw/
-data/temp/
-datasets/temp/
+# Security and credentials
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+.secrets
+credentials.json
+service-account.json
 
 # Development tools
-.pre-commit-config.yaml
-.editorconfig
-Makefile
-docker-compose*.yml
-
-# CI/CD
-.github/
-
-# Additional Python
-.nox/
 .mypy_cache/
 .dmypy.json
-dmypy.json
+dmyp.json
 .pyre/
 .pytype/
-cython_debug/
+.ruff_cache/
 
-# Jupyter
-.ipynb_checkpoints/
+# Jupyter notebooks
+.ipynb_checkpoints
+*.ipynb
 
-# Additional environments  
-.venv/
-env.bak/
-venv.bak/
+# Local development
+.local/
+.cache/
+node_modules/
+.npm/
 
-# Security
-.env
-*.key
-*.pem
-*.crt
+# Database files
+*.db
+*.sqlite
+*.sqlite3
 
-# Monitoring configs (should be in image)
-monitoring/
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Container and build artifacts
+docker-compose.override.yml
+.dockerignore.bak
+Dockerfile.dev
+Dockerfile.test
+
+# Model files (should be mounted as volumes)
+models/
+data/
+datasets/
+
+# Performance profiling
+*.prof
+*.pprof
+.benchmarks/
+profiling/
+
+# Terragon specific
+.terragon/
+CLAUDE.md
+.claude.md

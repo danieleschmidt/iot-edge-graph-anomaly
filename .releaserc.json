@@ -1,0 +1,126 @@
+{
+  "branches": [
+    "main",
+    {
+      "name": "develop",
+      "prerelease": "beta"
+    },
+    {
+      "name": "release/*",
+      "prerelease": "rc"
+    }
+  ],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/changelog",
+      {
+        "changelogFile": "CHANGELOG.md"
+      }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "verifyReleaseCmd": "make lint && make type-check && make test",
+        "prepareCmd": "make build",
+        "publishCmd": "echo 'Building and pushing Docker images' && make docker-build && make docker-push"
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "assets": [
+          "CHANGELOG.md",
+          "pyproject.toml",
+          "src/iot_edge_anomaly/__init__.py"
+        ],
+        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          {
+            "path": "dist/*.whl",
+            "label": "Python Wheel"
+          },
+          {
+            "path": "dist/*.tar.gz", 
+            "label": "Source Distribution"
+          }
+        ]
+      }
+    ]
+  ],
+  "preset": "angular",
+  "releaseRules": [
+    {
+      "type": "feat",
+      "release": "minor"
+    },
+    {
+      "type": "fix",
+      "release": "patch"
+    },
+    {
+      "type": "perf",
+      "release": "patch"
+    },
+    {
+      "type": "revert",
+      "release": "patch"
+    },
+    {
+      "type": "docs",
+      "scope": "README",
+      "release": "patch"
+    },
+    {
+      "type": "style",
+      "release": false
+    },
+    {
+      "type": "refactor",
+      "release": "patch"
+    },
+    {
+      "type": "test",
+      "release": false
+    },
+    {
+      "type": "build",
+      "release": "patch"
+    },
+    {
+      "type": "ci",
+      "release": false
+    },
+    {
+      "type": "chore",
+      "release": false
+    },
+    {
+      "scope": "no-release",
+      "release": false
+    },
+    {
+      "breaking": true,
+      "release": "major"
+    }
+  ],
+  "parserOpts": {
+    "noteKeywords": [
+      "BREAKING CHANGE",
+      "BREAKING CHANGES",
+      "BREAKING"
+    ]
+  },
+  "writerOpts": {
+    "commitsSort": [
+      "subject",
+      "scope"
+    ]
+  }
+}
