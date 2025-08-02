@@ -221,4 +221,75 @@ CLAUDE.md
 
 # Terragon Labs
 .terragon/
-\n# Terragon Autonomous SDLC\n!.terragon/\n.terragon/perpetual.log\n.terragon/*.json
+# Terragon Autonomous SDLC
+!.terragon/
+.terragon/perpetual.log
+.terragon/*.json
+
+# OS and Editor specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+.*.swp
+.*.swo
+
+# IDE and Editor directories
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Security and sensitive files
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+.secrets
+credentials.json
+service-account.json
+
+# Local development
+.dev/
+.local/
+.tmp/
+tmp/
+temp/
+.cache/
+node_modules/
+.npm/
+
+# Monitoring and logs
+logs/
+*.log.*
+audit.log
+access.log
+
+# Performance and profiling
+*.prof
+*.pprof
+.benchmarks/
+profiling/
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+
+# Kubernetes
+kubeconfig
+*.kubeconfig
+
+# Container and build artifacts
+.buildkit/
+.docker/
+docker-compose.override.yml
+.dockerignore.bak
