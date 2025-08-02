@@ -1,0 +1,231 @@
+# Multi-stage Dockerfile for IoT Edge Graph Anomaly Detection
+# Supports multiple build targets: base, development, test, production
+
+# ================================
+# Base Stage - Common Dependencies
+# ================================
+ARG PYTHON_VERSION=3.10
+ARG PLATFORM=linux/arm64
+FROM --platform=${PLATFORM} python:${PYTHON_VERSION}-slim as base
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    --no-install-recommends \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Create non-root user
+RUN groupadd -r iotuser && useradd -r -g iotuser iotuser
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements
+COPY requirements.txt pyproject.toml ./
+
+# ================================
+# Builder Stage - Build Dependencies
+# ================================
+FROM base as builder
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    --no-install-recommends \
+    build-essential \
+    gcc \
+    g++ \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+RUN pip install --upgrade pip setuptools wheel
+RUN pip install -r requirements.txt
+
+# Copy source code
+COPY src/ src/
+COPY setup.py ./
+
+# Build wheel
+RUN pip wheel --no-deps --wheel-dir /app/dist .
+
+# ================================
+# Development Stage - Full Development Environment
+# ================================
+FROM builder as development
+
+# Install development dependencies
+COPY pyproject.toml ./
+RUN pip install -e .[dev]
+
+# Install additional development tools
+RUN apt-get update && apt-get install -y \
+    --no-install-recommends \
+    git \
+    vim \
+    less \
+    htop \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Jupyter and development tools
+RUN pip install \
+    jupyter \
+    jupyterlab \
+    notebook \
+    ipywidgets
+
+# Copy all source files (including tests)
+COPY . .
+
+# Create directories for development
+RUN mkdir -p /app/logs /app/models /app/data && \
+    chown -R iotuser:iotuser /app
+
+# Switch to non-root user
+USER iotuser
+
+# Expose ports for development
+EXPOSE 8000 8080 9090 8888
+
+# Default command for development
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
+
+# ================================
+# Test Stage - Testing Environment
+# ================================
+FROM builder as test
+
+# Install test dependencies
+RUN pip install -e .[test]
+
+# Copy test files
+COPY tests/ tests/
+COPY pytest.ini ./
+COPY .coveragerc ./
+
+# Create test user and directories
+RUN mkdir -p /app/test-results /app/coverage && \
+    chown -R iotuser:iotuser /app
+
+# Switch to non-root user
+USER iotuser
+
+# Default command runs tests
+CMD ["pytest", "--cov=src", "--cov-report=html:/app/coverage/html", "--cov-report=xml:/app/coverage/coverage.xml", "--junit-xml=/app/test-results/pytest.xml"]
+
+# ================================
+# Production Stage - Minimal Runtime
+# ================================
+FROM base as production
+
+# Install only runtime dependencies
+RUN apt-get update && apt-get install -y \
+    --no-install-recommends \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Copy and install wheel from builder
+COPY --from=builder /app/dist/*.whl ./
+RUN pip install --no-deps *.whl && rm *.whl
+
+# Copy configuration and scripts
+COPY config/ config/ 2>/dev/null || :
+COPY scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY scripts/healthcheck.sh /usr/local/bin/healthcheck.sh
+
+# Make scripts executable
+RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/healthcheck.sh
+
+# Create application directories
+RUN mkdir -p /app/logs /app/models /app/data && \
+    chown -R iotuser:iotuser /app
+
+# Set resource limits and optimization
+ENV OMP_NUM_THREADS=2 \
+    MALLOC_ARENA_MAX=2 \
+    PYTHONHASHSEED=random
+
+# Switch to non-root user
+USER iotuser
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD /usr/local/bin/healthcheck.sh
+
+# Expose ports
+EXPOSE 8000 8080
+
+# Set entrypoint
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+# Default command
+CMD ["python", "-m", "iot_edge_anomaly.main"]
+
+# ================================
+# Multi-architecture Production
+# ================================
+FROM production as production-arm64
+# ARM64 specific optimizations
+ENV OPENBLAS_NUM_THREADS=2 \
+    OMP_NUM_THREADS=2
+
+FROM production as production-amd64
+# x86_64 specific optimizations
+ENV OPENBLAS_NUM_THREADS=4 \
+    OMP_NUM_THREADS=4
+
+# ================================
+# Debug Stage - Production + Debug Tools
+# ================================
+FROM production as debug
+
+# Switch back to root to install debug tools
+USER root
+
+# Install debug tools
+RUN apt-get update && apt-get install -y \
+    --no-install-recommends \
+    strace \
+    gdb \
+    procps \
+    net-tools \
+    tcpdump \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python debug tools
+RUN pip install \
+    py-spy \
+    memory-profiler \
+    psutil
+
+# Switch back to iotuser
+USER iotuser
+
+# Default command with debug options
+CMD ["python", "-X", "dev", "-m", "iot_edge_anomaly.main"]
+
+# ================================
+# Benchmark Stage - Performance Testing
+# ================================
+FROM test as benchmark
+
+# Install benchmarking tools
+RUN pip install \
+    pytest-benchmark \
+    memory-profiler \
+    py-spy
+
+# Copy benchmark tests
+COPY tests/performance/ tests/performance/
+COPY benchmarks.py ./
+
+# Default command runs benchmarks
+CMD ["python", "benchmarks.py"]
