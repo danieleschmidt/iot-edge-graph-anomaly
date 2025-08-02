@@ -1,0 +1,13 @@
+apiVersion: 1
+
+providers:
+  - name: 'IoT Edge Dashboards'
+    orgId: 1
+    folder: 'IoT Edge Anomaly Detection'
+    folderUid: iot-edge-folder
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards
