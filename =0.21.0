@@ -1,0 +1,20 @@
+Collecting pytest
+  Using cached pytest-8.4.1-py3-none-any.whl.metadata (7.7 kB)
+Collecting pytest-cov
+  Using cached pytest_cov-6.2.1-py3-none-any.whl.metadata (30 kB)
+Collecting pytest-mock
+  Using cached pytest_mock-3.14.1-py3-none-any.whl.metadata (3.9 kB)
+Collecting pytest-asyncio
+  Downloading pytest_asyncio-1.1.0-py3-none-any.whl.metadata (4.1 kB)
+Requirement already satisfied: iniconfig>=1 in ./venv/lib/python3.12/site-packages (from pytest) (2.1.0)
+Requirement already satisfied: packaging>=20 in ./venv/lib/python3.12/site-packages (from pytest) (25.0)
+Requirement already satisfied: pluggy<2,>=1.5 in ./venv/lib/python3.12/site-packages (from pytest) (1.6.0)
+Requirement already satisfied: pygments>=2.7.2 in ./venv/lib/python3.12/site-packages (from pytest) (2.19.2)
+Requirement already satisfied: coverage>=7.5 in ./venv/lib/python3.12/site-packages (from coverage[toml]>=7.5->pytest-cov) (7.10.2)
+Using cached pytest-8.4.1-py3-none-any.whl (365 kB)
+Using cached pytest_cov-6.2.1-py3-none-any.whl (24 kB)
+Using cached pytest_mock-3.14.1-py3-none-any.whl (9.9 kB)
+Downloading pytest_asyncio-1.1.0-py3-none-any.whl (15 kB)
+Installing collected packages: pytest, pytest-mock, pytest-cov, pytest-asyncio
+
+Successfully installed pytest-8.4.1 pytest-asyncio-1.1.0 pytest-cov-6.2.1 pytest-mock-3.14.1

@@ -9,6 +9,10 @@ reconstruction error.
 import torch
 import torch.nn as nn
 from typing import Tuple, Optional
+import logging
+from ..validation_utils import TensorValidator, ValidationResult
+
+logger = logging.getLogger(__name__)
 
 
 class LSTMAutoencoder(nn.Module):
@@ -35,10 +39,23 @@ class LSTMAutoencoder(nn.Module):
     ):
         super(LSTMAutoencoder, self).__init__()
         
+        # Validate parameters
+        if input_size <= 0:
+            raise ValueError(f"input_size must be positive, got {input_size}")
+        if hidden_size <= 0:
+            raise ValueError(f"hidden_size must be positive, got {hidden_size}")
+        if num_layers <= 0:
+            raise ValueError(f"num_layers must be positive, got {num_layers}")
+        if not (0 <= dropout < 1):
+            raise ValueError(f"dropout must be in [0, 1), got {dropout}")
+        
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.num_layers = num_layers
         self.dropout = dropout
+        
+        # Initialize validator
+        self.validator = TensorValidator()
         
         # Encoder: compress sequence to latent representation
         self.encoder = nn.LSTM(
@@ -124,13 +141,36 @@ class LSTMAutoencoder(nn.Module):
         Returns:
             reconstruction: Reconstructed input (batch_size, seq_len, input_size)
         """
-        # Encode input sequence
-        encoded, _ = self.encode(x)
+        # Validate input
+        validation = self.validator.validate_time_series(x)
+        if validation.status == ValidationResult.INVALID:
+            raise ValueError(f"Invalid input tensor: {validation.message}")
+        elif validation.status == ValidationResult.CORRECTABLE:
+            logger.warning(f"Input corrected: {validation.message}")
+            if validation.corrected_data is not None:
+                x = validation.corrected_data
         
-        # Decode to reconstruct original sequence
-        reconstruction = self.decode(encoded, x.size(1))
+        # Check input size matches model expectation
+        if x.size(-1) != self.input_size:
+            raise ValueError(f"Input size {x.size(-1)} doesn't match model input_size {self.input_size}")
         
-        return reconstruction
+        try:
+            # Encode input sequence
+            encoded, _ = self.encode(x)
+            
+            # Decode to reconstruct original sequence
+            reconstruction = self.decode(encoded, x.size(1))
+            
+            # Validate output
+            output_validation = self.validator.validate_tensor(reconstruction, tensor_name="reconstruction")
+            if output_validation.status == ValidationResult.INVALID:
+                raise RuntimeError(f"Model produced invalid output: {output_validation.message}")
+            
+            return reconstruction
+            
+        except Exception as e:
+            logger.error(f"Forward pass failed: {e}")
+            raise
     
     def compute_reconstruction_error(
         self, 
