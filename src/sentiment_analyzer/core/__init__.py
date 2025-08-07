@@ -1,0 +1,1 @@
+"""Core sentiment analysis functionality."""

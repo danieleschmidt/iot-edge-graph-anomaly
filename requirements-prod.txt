@@ -1,0 +1,56 @@
+# Production requirements for Sentiment Analyzer Pro
+
+# Core dependencies
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+gunicorn>=21.2.0
+pydantic>=2.4.0
+
+# Sentiment analysis
+vaderSentiment>=3.3.2
+textblob>=0.17.1
+
+# Data processing
+numpy>=1.24.0
+pandas>=2.0.0
+
+# Async and performance
+aiofiles>=23.2.1
+asyncio-throttle>=1.0.2
+
+# Caching and storage
+redis>=5.0.0
+hiredis>=2.2.3
+
+# Monitoring and metrics
+prometheus-client>=0.17.0
+opentelemetry-api>=1.20.0
+opentelemetry-sdk>=1.20.0
+opentelemetry-exporter-otlp>=1.20.0
+opentelemetry-instrumentation-fastapi>=0.41b0
+
+# Configuration
+pyyaml>=6.0
+python-dotenv>=1.0.0
+
+# Logging
+structlog>=23.1.0
+python-json-logger>=2.0.7
+
+# Security
+cryptography>=41.0.7
+bcrypt>=4.0.1
+
+# HTTP client
+httpx>=0.25.0
+
+# Database (if needed)
+sqlalchemy>=2.0.0
+alembic>=1.12.0
+
+# CLI
+click>=8.1.0
+
+# Utilities
+python-multipart>=0.0.6
+jinja2>=3.1.2

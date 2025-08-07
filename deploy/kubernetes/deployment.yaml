@@ -1,0 +1,280 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sentiment-analyzer
+  namespace: sentiment-analyzer
+  labels:
+    app: sentiment-analyzer
+    version: v1
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: sentiment-analyzer
+  template:
+    metadata:
+      labels:
+        app: sentiment-analyzer
+        version: v1
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: sentiment-analyzer
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+      - name: sentiment-analyzer
+        image: sentiment-analyzer:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: SENTIMENT_API_HOST
+          value: "0.0.0.0"
+        - name: SENTIMENT_API_PORT
+          value: "8000"
+        - name: SENTIMENT_API_WORKERS
+          value: "4"
+        - name: SENTIMENT_SECURITY_LEVEL
+          value: "strict"
+        - name: SENTIMENT_CACHE_ENABLED
+          value: "true"
+        - name: SENTIMENT_METRICS_ENABLED
+          value: "true"
+        - name: SENTIMENT_RATE_LIMIT
+          value: "1000"
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: sentiment-analyzer-secrets
+              key: redis-url
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+          readOnly: true
+        - name: data
+          mountPath: /app/data
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          capabilities:
+            drop:
+            - ALL
+      volumes:
+      - name: config
+        configMap:
+          name: sentiment-analyzer-config
+      - name: data
+        persistentVolumeClaim:
+          claimName: sentiment-analyzer-data
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - sentiment-analyzer
+              topologyKey: kubernetes.io/hostname
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sentiment-analyzer-service
+  namespace: sentiment-analyzer
+  labels:
+    app: sentiment-analyzer
+spec:
+  selector:
+    app: sentiment-analyzer
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8000
+    protocol: TCP
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sentiment-analyzer
+  namespace: sentiment-analyzer
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sentiment-analyzer-config
+  namespace: sentiment-analyzer
+data:
+  config.yaml: |
+    analysis:
+      model_type: vader
+      confidence_threshold: 0.6
+      batch_size: 32
+      max_length: 512
+      cache_results: true
+      enable_preprocessing: true
+    
+    api:
+      host: 0.0.0.0
+      port: 8000
+      workers: 4
+      reload: false
+      log_level: info
+      cors_origins: ["*"]
+      rate_limit_requests: 1000
+      rate_limit_window: 3600
+    
+    security:
+      level: strict
+      max_text_length: 5000
+      enable_profanity_filter: true
+      enable_rate_limiting: true
+      log_security_events: true
+    
+    monitoring:
+      enable_metrics: true
+      metrics_retention_hours: 24
+      enable_health_checks: true
+      enable_circuit_breakers: true
+      prometheus_endpoint: true
+    
+    cache:
+      enable_cache: true
+      max_cache_size: 10000
+      cache_ttl_seconds: 3600
+      clear_cache_on_startup: false
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sentiment-analyzer-secrets
+  namespace: sentiment-analyzer
+type: Opaque
+data:
+  redis-url: cmVkaXM6Ly9yZWRpcy1zZXJ2aWNlOjYzNzk=  # redis://redis-service:6379
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sentiment-analyzer-data
+  namespace: sentiment-analyzer
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sentiment-analyzer-ingress
+  namespace: sentiment-analyzer
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rate-limit: "1000"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - sentiment-api.yourdomain.com
+    secretName: sentiment-analyzer-tls
+  rules:
+  - host: sentiment-api.yourdomain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: sentiment-analyzer-service
+            port:
+              number: 80
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: sentiment-analyzer-pdb
+  namespace: sentiment-analyzer
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: sentiment-analyzer
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: sentiment-analyzer-hpa
+  namespace: sentiment-analyzer
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: sentiment-analyzer
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
