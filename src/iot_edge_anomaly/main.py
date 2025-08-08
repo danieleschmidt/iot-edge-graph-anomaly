@@ -1,5 +1,5 @@
 """
-Main entry point for IoT Edge Anomaly Detection and Sentiment Analysis application.
+Main entry point for IoT Edge Anomaly Detection application.
 """
 import sys
 import time
@@ -19,9 +19,6 @@ from .config_validator import validate_config, apply_config_defaults
 from .circuit_breaker import CircuitBreaker, CircuitBreakerConfig, CircuitBreakerError, circuit_breaker_registry
 from .performance_optimizer import performance_monitor
 from .async_processor import async_processor, stream_processor
-
-# Sentiment analysis imports
-from .sentiment.main import main as sentiment_main
 
 # Configure logging
 logging.basicConfig(
@@ -327,62 +324,41 @@ class IoTAnomalyDetectionApp:
 
 
 def main():
-    """Main application entry point with multi-mode support."""
-    logger.info("Starting IoT Edge Application Suite v0.2.0")
+    """Main application entry point."""
+    logger.info("Starting IoT Edge Anomaly Detection v0.1.0")
     
     try:
-        # Parse command line arguments with mode selection
-        parser = argparse.ArgumentParser(description='IoT Edge Application Suite')
-        parser.add_argument('mode', choices=['anomaly', 'sentiment'], 
-                          help='Application mode: anomaly detection or sentiment analysis')
+        # Parse command line arguments
+        parser = argparse.ArgumentParser(description='IoT Edge Anomaly Detection')
         parser.add_argument('--config', default='config/default.yaml',
-                          help='Path to configuration file (anomaly mode only)')
+                          help='Path to configuration file')
+        args = parser.parse_args()
         
-        # Parse only the mode first to determine which sub-parser to use
-        args, remaining = parser.parse_known_args()
+        # Load configuration (with defaults if file doesn't exist)
+        try:
+            config = load_config(args.config)
+            logger.info(f"Loaded configuration from {args.config}")
+        except FileNotFoundError:
+            logger.warning(f"Config file {args.config} not found, using defaults")
+            config = {}
         
-        if args.mode == 'sentiment':
-            # Delegate to sentiment analysis main function
-            logger.info("Starting Sentiment Analysis mode...")
-            sys.argv = ['sentiment'] + remaining  # Reconstruct argv for sentiment main
-            return sentiment_main()
+        # Apply defaults and validate configuration
+        config = apply_config_defaults(config)
+        validation_issues = validate_config(config)
         
-        elif args.mode == 'anomaly':
-            # Continue with original anomaly detection logic
-            logger.info("Starting IoT Edge Anomaly Detection v0.1.0")
-            
-            # Re-parse with full parser for anomaly mode
-            parser = argparse.ArgumentParser(description='IoT Edge Anomaly Detection')
-            parser.add_argument('mode', help=argparse.SUPPRESS)  # Hidden
-            parser.add_argument('--config', default='config/default.yaml',
-                              help='Path to configuration file')
-            full_args = parser.parse_args()
-            
-            # Load configuration (with defaults if file doesn't exist)
-            try:
-                config = load_config(full_args.config)
-                logger.info(f"Loaded configuration from {full_args.config}")
-            except FileNotFoundError:
-                logger.warning(f"Config file {full_args.config} not found, using defaults")
-                config = {}
-            
-            # Apply defaults and validate configuration
-            config = apply_config_defaults(config)
-            validation_issues = validate_config(config)
-            
-            # Exit if there are configuration errors
-            error_count = len([issue for issue in validation_issues 
-                              if issue.severity.value == 'error'])
-            if error_count > 0:
-                logger.error(f"Configuration has {error_count} error(s). Cannot start application.")
-                return 1
-            
-            # Initialize and run application
-            app = IoTAnomalyDetectionApp(config)
-            app.initialize_components()
-            app.run_processing_loop()
-            
-            return 0
+        # Exit if there are configuration errors
+        error_count = len([issue for issue in validation_issues 
+                          if issue.severity.value == 'error'])
+        if error_count > 0:
+            logger.error(f"Configuration has {error_count} error(s). Cannot start application.")
+            return 1
+        
+        # Initialize and run application
+        app = IoTAnomalyDetectionApp(config)
+        app.initialize_components()
+        app.run_processing_loop()
+        
+        return 0
         
     except Exception as e:
         logger.error(f"Application failed: {e}")
