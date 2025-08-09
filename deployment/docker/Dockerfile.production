@@ -1,0 +1,93 @@
+# Production Dockerfile for IoT Edge Anomaly Detection
+# Multi-stage build for optimized edge deployment
+
+# Stage 1: Build stage with full development environment
+FROM python:3.11-slim as builder
+
+# Install system dependencies for building
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements and install dependencies
+COPY requirements.txt pyproject.toml ./
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir build
+
+# Copy source code
+COPY src/ src/
+COPY setup.py ./
+
+# Build the package
+RUN python -m build --wheel --no-isolation
+
+# Stage 2: Runtime stage - minimal image for production
+FROM python:3.11-slim as runtime
+
+# Create non-root user for security
+RUN groupadd -r iotuser && useradd -r -g iotuser -d /app -s /sbin/nologin iotuser
+
+# Install runtime dependencies only
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Set working directory
+WORKDIR /app
+
+# Copy built wheel from builder stage
+COPY --from=builder /app/dist/*.whl ./
+
+# Install the application
+RUN pip install --no-cache-dir *.whl \
+    && rm -f *.whl \
+    && pip cache purge
+
+# Copy configuration and scripts
+COPY deployment/config/ config/
+COPY scripts/entrypoint.sh scripts/healthcheck.sh ./
+RUN chmod +x entrypoint.sh healthcheck.sh
+
+# Create necessary directories with proper permissions
+RUN mkdir -p logs data models cache \
+    && chown -R iotuser:iotuser /app
+
+# Switch to non-root user
+USER iotuser
+
+# Set environment variables
+ENV PYTHONPATH="/app/src:$PYTHONPATH"
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV IOT_ANOMALY_CONFIG="/app/config/production.yaml"
+ENV LOG_LEVEL=INFO
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD ./healthcheck.sh
+
+# Default configuration
+EXPOSE 8080
+
+# Entry point
+ENTRYPOINT ["./entrypoint.sh"]
+CMD ["python", "-m", "iot_edge_anomaly.main", "--config", "/app/config/production.yaml"]
+
+# Metadata
+LABEL maintainer="Terragon Labs <noreply@anthropic.com>"
+LABEL version="1.0.0"
+LABEL description="IoT Edge Graph Anomaly Detection with LSTM-GNN Hybrid Model"
+LABEL org.opencontainers.image.source="https://github.com/your-org/iot-edge-graph-anomaly"
+LABEL org.opencontainers.image.licenses="Apache-2.0"
+
+# Resource limits (can be overridden at runtime)
+ENV MEMORY_LIMIT=100M
+ENV CPU_LIMIT=25

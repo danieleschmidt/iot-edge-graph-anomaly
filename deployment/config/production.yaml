@@ -1,0 +1,332 @@
+# Production configuration for IoT Edge Anomaly Detection
+# This configuration is optimized for production edge deployment
+
+# Model Configuration
+model:
+  input_size: 5
+  hidden_size: 64
+  num_layers: 2
+  dropout: 0.1
+  sequence_length: 20
+
+# Hybrid Model Configuration
+hybrid_model:
+  lstm:
+    input_size: 5
+    hidden_size: 64
+    num_layers: 2
+    dropout: 0.1
+  gnn:
+    input_dim: 64
+    hidden_dim: 32
+    output_dim: 64
+    num_layers: 2
+    dropout: 0.1
+  fusion:
+    output_dim: 128
+    method: "concatenate"  # Options: concatenate, attention, gate
+  graph:
+    method: "correlation"  # Options: correlation, fully_connected
+    threshold: 0.3
+
+# Processing Configuration
+processing:
+  loop_interval: 5.0  # seconds between processing cycles
+  max_iterations: null  # null for unlimited
+  batch_size: 32
+  timeout_seconds: 30.0
+
+# Anomaly Detection
+anomaly_threshold: 0.5
+adaptive_threshold: false
+
+# Health Monitoring
+health:
+  memory_threshold_mb: 100
+  cpu_threshold_percent: 80
+  disk_threshold_percent: 85
+  check_interval: 60  # seconds
+
+# Circuit Breaker Configuration
+circuit_breaker:
+  failure_threshold: 5
+  recovery_timeout: 60.0  # seconds
+  timeout: 10.0  # seconds
+  half_open_max_calls: 3
+
+# Monitoring and Observability
+monitoring:
+  enabled: true
+  otlp_endpoint: "http://otel-collector:4317"
+  metrics_interval: 30  # seconds
+  export_timeout: 10  # seconds
+  batch_size: 100
+  
+  # Metrics configuration
+  metrics:
+    anomaly_detection_count: true
+    inference_latency: true
+    reconstruction_error: true
+    system_resources: true
+    model_performance: true
+    
+  # Custom labels for metrics
+  labels:
+    deployment: "production"
+    version: "v1.0.0"
+    region: "us-west-2"
+
+# Performance Optimization
+performance:
+  enable_optimization: true
+  optimization_level: "edge_aggressive"  # Options: development, edge_basic, edge_aggressive, cloud_optimized
+  
+  # Model optimization
+  enable_quantization: true
+  enable_model_pruning: false
+  pruning_sparsity: 0.3
+  
+  # Caching
+  enable_caching: true
+  cache_strategy: "adaptive"  # Options: lru, lfu, ttl, adaptive
+  max_cache_size_mb: 50
+  cache_ttl_seconds: 300
+  
+  # Batch processing
+  enable_batching: true
+  max_batch_size: 32
+  batch_timeout_ms: 100
+  
+  # Async processing
+  enable_async_processing: true
+  max_concurrent_requests: 10
+  
+  # Resource targets
+  target_memory_mb: 100
+  target_inference_time_ms: 10.0
+
+# Security Configuration
+security:
+  enabled: true
+  enable_authentication: true
+  protection_level: "medium"  # Options: low, medium, high, critical
+  
+  # Rate limiting
+  max_requests_per_hour: 1000
+  max_requests_per_minute: 100
+  
+  # Input validation
+  input_sanitization:
+    enabled: true
+    max_tensor_size: 10000
+    max_value_range: [-100, 100]
+    allowed_shapes: [[1, 20, 5], [1, 30, 8]]
+  
+  # Authentication
+  token_expiry_seconds: 3600
+  max_failed_attempts: 5
+  
+  # Threat detection
+  enable_threat_detection: true
+  adversarial_detection_threshold: 0.7
+
+# Fault Tolerance
+fault_tolerance:
+  enabled: true
+  
+  # Resilient detector configuration
+  max_retries: 3
+  retry_backoff_seconds: 2.0
+  
+  # Fallback model
+  enable_fallback_model: true
+  fallback_threshold: 2.0
+  
+  # State persistence
+  enable_state_persistence: true
+  state_dir: "/app/data/state"
+  
+  # Recovery strategies
+  recovery_strategies:
+    model_inference_error: "fallback_model"
+    data_corruption: "retry_with_backoff"
+    memory_exhaustion: "degraded_mode"
+    network_failure: "degraded_mode"
+    hardware_failure: "safe_shutdown"
+
+# Data Configuration
+data:
+  # Data sources
+  sources:
+    - type: "simulator"  # For demo/testing
+      config:
+        n_sensors: 5
+        sampling_rate_hz: 1.0
+        noise_level: 0.1
+  
+  # Data validation
+  validation:
+    enabled: true
+    check_nan: true
+    check_inf: true
+    check_range: true
+    min_value: -10.0
+    max_value: 10.0
+  
+  # Data preprocessing
+  preprocessing:
+    normalization: "minmax"  # Options: minmax, zscore, robust
+    feature_scaling: true
+    outlier_removal: false
+
+# Logging Configuration
+logging:
+  level: "INFO"  # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "json"  # Options: json, text
+  
+  # Log destinations
+  destinations:
+    console: true
+    file: true
+    syslog: false
+  
+  # File logging
+  file:
+    path: "/app/logs/iot-anomaly.log"
+    max_size_mb: 100
+    backup_count: 5
+    rotation: "time"  # Options: time, size
+  
+  # Structured logging
+  structured:
+    enabled: true
+    include_timestamp: true
+    include_level: true
+    include_module: true
+    include_function: false
+
+# API Configuration (if HTTP API is enabled)
+api:
+  enabled: false  # Disabled for edge deployment
+  host: "0.0.0.0"
+  port: 8080
+  workers: 2
+  
+  # CORS
+  cors:
+    enabled: true
+    allow_origins: ["*"]
+    allow_methods: ["GET", "POST"]
+    allow_headers: ["*"]
+  
+  # Rate limiting
+  rate_limit:
+    enabled: true
+    requests_per_minute: 60
+    burst_size: 10
+
+# Storage Configuration
+storage:
+  # Model storage
+  models:
+    type: "local"  # Options: local, s3, gcs
+    path: "/app/models"
+    auto_download: true
+    checksum_verification: true
+  
+  # Metrics storage
+  metrics:
+    type: "memory"  # Options: memory, file, database
+    retention_hours: 24
+    max_samples: 10000
+  
+  # Cache storage
+  cache:
+    type: "memory"  # Options: memory, file, redis
+    persistence: false
+    cleanup_interval: 300
+
+# Deployment Configuration
+deployment:
+  environment: "production"
+  region: "us-west-2"
+  availability_zone: "us-west-2a"
+  
+  # Resource limits
+  resources:
+    memory_limit: "128Mi"
+    cpu_limit: "250m"
+    memory_request: "64Mi"
+    cpu_request: "100m"
+  
+  # Scaling
+  autoscaling:
+    enabled: true
+    min_replicas: 2
+    max_replicas: 10
+    target_cpu_utilization: 70
+    target_memory_utilization: 80
+  
+  # Health checks
+  health_checks:
+    liveness_probe:
+      path: "/health"
+      initial_delay: 60
+      period: 30
+      timeout: 10
+      failure_threshold: 3
+    
+    readiness_probe:
+      path: "/ready"
+      initial_delay: 30
+      period: 10
+      timeout: 5
+      failure_threshold: 3
+
+# Feature Flags
+features:
+  enable_hybrid_model: true
+  enable_graph_neural_network: true
+  enable_advanced_validation: true
+  enable_security_framework: true
+  enable_performance_optimization: true
+  enable_fault_tolerance: true
+  enable_comparative_analysis: true
+  enable_research_mode: false  # Disabled in production
+
+# Experimental Features (use with caution in production)
+experimental:
+  enable_quantum_optimization: false
+  enable_federated_learning: false
+  enable_edge_ai_acceleration: false
+  enable_neuromorphic_processing: false
+
+# Compliance and Governance
+compliance:
+  data_privacy:
+    gdpr_compliant: true
+    ccpa_compliant: true
+    data_anonymization: true
+  
+  security_standards:
+    iso27001_compliant: true
+    nist_framework: true
+    security_audit_logging: true
+  
+  industry_standards:
+    iec61508_functional_safety: true
+    ieee2755_iot_security: true
+    nist_cybersecurity_framework: true
+
+# Version and Build Information
+version: "1.0.0"
+build:
+  commit_hash: "auto-detect"
+  build_time: "auto-detect"
+  build_environment: "production"
+  
+# Contact and Support
+support:
+  contact_email: "support@terragon-labs.com"
+  documentation_url: "https://docs.terragon-labs.com/iot-anomaly"
+  issue_tracker: "https://github.com/terragon-labs/iot-edge-anomaly/issues"
