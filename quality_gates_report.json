@@ -53,7 +53,7 @@
       "passed": 6,
       "failed": 0,
       "details": [
-        "\u2705 src/iot_edge_anomaly/models properly organized (4 files)",
+        "\u2705 src/iot_edge_anomaly/models properly organized (10 files)",
         "\u2705 src/iot_edge_anomaly/validation properly organized (1 files)",
         "\u2705 src/iot_edge_anomaly/resilience properly organized (1 files)",
         "\u2705 src/iot_edge_anomaly/security properly organized (1 files)",
