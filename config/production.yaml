@@ -1,0 +1,112 @@
+# Production configuration for Terragon IoT Edge Anomaly Detection v4.0
+# Optimized for edge deployment with high reliability
+
+# Application metadata
+app:
+  name: "terragon-iot-anomaly-detection"
+  version: "4.0.0"
+  environment: "production"
+  
+# Model configuration - production optimized
+model:
+  input_size: 5
+  hidden_size: 32      # Reduced for edge efficiency
+  num_layers: 2
+  dropout: 0.1
+  sequence_length: 20
+  
+# Anomaly detection configuration
+anomaly_detection:
+  threshold: 0.5
+  multi_threshold_levels:
+    low_anomaly: 0.3
+    medium_anomaly: 0.6
+    high_anomaly: 0.9
+  enable_adaptive_threshold: true
+  
+# Processing configuration - production optimized
+processing:
+  loop_interval: 1.0     # Fast response for production
+  max_iterations: null   # Infinite for production
+  batch_size: 8          # Optimized for memory/performance
+  enable_async_processing: true
+  enable_stream_processing: false  # Disabled for stability
+  
+# Health monitoring configuration
+health:
+  memory_threshold_mb: 200
+  cpu_threshold_percent: 75
+  enable_detailed_monitoring: true
+  health_check_interval: 30
+  
+# Circuit breaker configuration - production hardened
+circuit_breaker:
+  failure_threshold: 3      # Lower threshold for production
+  recovery_timeout: 30.0    # Faster recovery
+  timeout: 5.0             # Lower timeout
+  enable_cascade_protection: true
+  
+# Performance optimization - maximum efficiency
+performance:
+  enable_optimization: true
+  quantization: "fp16"      # 16-bit for edge deployment
+  batch_size: 8
+  num_workers: 1           # Single worker for edge
+  enable_model_compilation: true
+  enable_memory_pooling: true
+  target_latency_ms: 50.0  # Aggressive latency target
+  
+# Monitoring configuration - production ready
+monitoring:
+  export_interval: 30
+  metrics_port: 8080
+  health_port: 8081
+  enable_prometheus: true
+  enable_opentelemetry: false  # Disabled for edge deployment
+  enable_model_explanations: false  # Disabled for performance
+  enable_uncertainty_tracking: true
+  
+# Security configuration - production hardened
+security:
+  enable_differential_privacy: false  # Disabled for performance
+  enable_adversarial_detection: false # Disabled for performance
+  enable_input_validation: true
+  enable_rate_limiting: true
+  max_requests_per_minute: 1000
+  
+# Logging configuration
+logging:
+  level: "INFO"
+  format: "structured"
+  enable_file_logging: true
+  log_file: "/app/logs/anomaly_detection.log"
+  max_file_size_mb: 100
+  backup_count: 5
+  
+# Data configuration
+data:
+  enable_data_persistence: false  # Disabled for edge
+  enable_model_caching: true
+  cache_size: 100
+  
+# Deployment configuration
+deployment:
+  edge_mode: true
+  resource_limits:
+    memory_limit_mb: 512
+    cpu_limit_percent: 80
+  graceful_shutdown_timeout: 30
+  
+# Feature flags for production
+features:
+  enable_advanced_ensemble: false    # Disabled for stability
+  enable_federated_learning: false   # Disabled for edge
+  enable_auto_scaling: false         # Not applicable for edge
+  enable_model_updates: false        # Disabled for stability
+  
+# Alert configuration
+alerts:
+  enable_alerts: true
+  alert_channels: ["logs"]  # Only log-based alerts for edge
+  high_anomaly_threshold: 0.8
+  consecutive_anomaly_limit: 5

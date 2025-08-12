@@ -1,0 +1,42 @@
+# Default configuration for IoT Edge Anomaly Detection
+# This configuration provides sensible defaults for edge deployment
+
+# Model configuration
+model:
+  input_size: 5
+  hidden_size: 64
+  num_layers: 2
+  dropout: 0.1
+  sequence_length: 20
+
+# Anomaly detection threshold
+anomaly_threshold: 0.5
+
+# Processing configuration
+processing:
+  loop_interval: 5.0
+  max_iterations: null  # null for infinite loop
+
+# Health monitoring configuration  
+health:
+  memory_threshold_mb: 100
+  cpu_threshold_percent: 80
+
+# Circuit breaker configuration
+circuit_breaker:
+  failure_threshold: 5
+  recovery_timeout: 60.0
+  timeout: 10.0
+
+# Performance optimization
+performance:
+  enable_optimization: true
+  batch_size: 32
+  num_workers: 2
+
+# Monitoring configuration
+monitoring:
+  export_interval: 60
+  metrics_port: 8080
+  enable_prometheus: true
+  enable_opentelemetry: false
