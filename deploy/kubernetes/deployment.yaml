@@ -1,0 +1,197 @@
+# Kubernetes deployment for Terragon IoT Edge Anomaly Detection v4.0
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: terragon-iot-anomaly-detection
+  namespace: default
+  labels:
+    app: terragon-iot-anomaly-detection
+    version: v4.0.0
+    component: edge-inference
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: terragon-iot-anomaly-detection
+  template:
+    metadata:
+      labels:
+        app: terragon-iot-anomaly-detection
+        version: v4.0.0
+        component: edge-inference
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: anomaly-detector
+        image: terragon/iot-anomaly-detection:v4.0.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: metrics
+          protocol: TCP
+        - containerPort: 8081
+          name: health
+          protocol: TCP
+        env:
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: WORKERS
+          value: "1"
+        - name: PORT
+          value: "8080"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8081
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8081
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+          readOnly: true
+        - name: logs
+          mountPath: /app/logs
+        - name: models
+          mountPath: /app/models
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 1000
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+      volumes:
+      - name: config
+        configMap:
+          name: terragon-config
+      - name: logs
+        emptyDir: {}
+      - name: models
+        emptyDir: {}
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: terragon-iot-anomaly-detection-service
+  namespace: default
+  labels:
+    app: terragon-iot-anomaly-detection
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+    name: metrics
+  - port: 8081
+    targetPort: 8081
+    protocol: TCP
+    name: health
+  selector:
+    app: terragon-iot-anomaly-detection
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: terragon-config
+  namespace: default
+data:
+  production.yaml: |
+    # Production configuration mounted from ConfigMap
+    app:
+      name: "terragon-iot-anomaly-detection"
+      version: "4.0.0"
+      environment: "production"
+    model:
+      input_size: 5
+      hidden_size: 32
+      num_layers: 2
+      dropout: 0.1
+      sequence_length: 20
+    processing:
+      loop_interval: 1.0
+      batch_size: 8
+      enable_async_processing: true
+    monitoring:
+      export_interval: 30
+      metrics_port: 8080
+      health_port: 8081
+      enable_prometheus: true
+    security:
+      enable_input_validation: true
+      enable_rate_limiting: true
+      max_requests_per_minute: 1000
+    logging:
+      level: "INFO"
+      format: "structured"
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: terragon-iot-anomaly-detection-hpa
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: terragon-iot-anomaly-detection
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 180
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60

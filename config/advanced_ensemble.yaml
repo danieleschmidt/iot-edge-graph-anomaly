@@ -1,0 +1,69 @@
+# Advanced ensemble configuration for IoT Edge Anomaly Detection
+# Enables all 5 breakthrough AI algorithms with optimal settings
+
+# Model configuration - Advanced Ensemble
+model:
+  input_size: 5
+  hidden_size: 128
+  num_layers: 3
+  dropout: 0.2
+  sequence_length: 50
+
+# Advanced AI Models Configuration
+advanced_models:
+  enable_transformer_vae: true
+  enable_sparse_gat: true  
+  enable_physics_informed: true
+  enable_self_supervised: true
+  enable_federated_learning: false  # Requires coordination server
+  
+  # Ensemble configuration
+  ensemble_method: "dynamic_weighting"
+  uncertainty_quantification: true
+  confidence_threshold: 0.8
+
+# Enhanced anomaly detection
+anomaly_threshold: 0.3  # Lower threshold for higher sensitivity
+multi_threshold_levels:
+  low_anomaly: 0.3
+  medium_anomaly: 0.6
+  high_anomaly: 0.9
+
+# Optimized processing for advanced models
+processing:
+  loop_interval: 2.0  # Faster processing
+  batch_size: 64
+  enable_async_processing: true
+  enable_stream_processing: true
+
+# Advanced health monitoring
+health:
+  memory_threshold_mb: 500  # Higher for advanced models
+  cpu_threshold_percent: 85
+  gpu_monitoring: true
+  model_drift_detection: true
+
+# Robust circuit breakers
+circuit_breaker:
+  failure_threshold: 3
+  recovery_timeout: 30.0
+  timeout: 5.0
+  enable_cascade_protection: true
+
+# Edge optimization for advanced models
+performance:
+  enable_optimization: true
+  quantization: "int8"  # 8-bit quantization
+  pruning_threshold: 0.1
+  tensor_parallelism: true
+  memory_optimization: true
+  inference_acceleration: true
+
+# Comprehensive monitoring
+monitoring:
+  export_interval: 30
+  metrics_port: 8080
+  enable_prometheus: true
+  enable_opentelemetry: true
+  enable_model_explanations: true
+  enable_uncertainty_tracking: true
