@@ -1,0 +1,111 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: iot-edge-fast-ssd
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: storage
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: iot-edge-models-pv
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: storage
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadOnlyMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: iot-edge-fast-ssd
+  hostPath:
+    path: /opt/iot-edge-models
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - edge-node-1
+          - edge-node-2
+          - edge-node-3
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: iot-edge-models-pvc
+  namespace: iot-edge-anomaly
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: storage
+spec:
+  accessModes:
+  - ReadOnlyMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: iot-edge-fast-ssd
+  selector:
+    matchLabels:
+      app: iot-edge-anomaly
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: iot-edge-data-pv
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: storage
+spec:
+  capacity:
+    storage: 50Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: iot-edge-fast-ssd
+  hostPath:
+    path: /opt/iot-edge-data
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - edge-node-1
+          - edge-node-2
+          - edge-node-3
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: iot-edge-data-pvc
+  namespace: iot-edge-anomaly
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: storage
+spec:
+  accessModes:
+  - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: iot-edge-fast-ssd

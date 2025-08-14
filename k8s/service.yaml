@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: iot-edge-anomaly-service
+  namespace: iot-edge-anomaly
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: service
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9090"
+    prometheus.io/path: "/metrics"
+spec:
+  type: ClusterIP
+  selector:
+    app: iot-edge-anomaly
+  ports:
+  - name: http
+    port: 8000
+    targetPort: http
+    protocol: TCP
+  - name: health
+    port: 8080
+    targetPort: health
+    protocol: TCP
+  - name: metrics
+    port: 9090
+    targetPort: metrics
+    protocol: TCP
+  sessionAffinity: None
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iot-edge-anomaly-headless
+  namespace: iot-edge-anomaly
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: headless-service
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: iot-edge-anomaly
+  ports:
+  - name: http
+    port: 8000
+    targetPort: http
+    protocol: TCP
+  - name: health
+    port: 8080
+    targetPort: health
+    protocol: TCP
+  - name: metrics
+    port: 9090
+    targetPort: metrics
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iot-edge-anomaly-external
+  namespace: iot-edge-anomaly
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: external-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: iot-edge-anomaly
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+    protocol: TCP
+  - name: https
+    port: 443
+    targetPort: http
+    protocol: TCP
+  loadBalancerSourceRanges:
+  - 0.0.0.0/0
+  externalTrafficPolicy: Local

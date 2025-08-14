@@ -1,0 +1,228 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-config
+  namespace: iot-edge-anomaly
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: logging
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush         1
+        Log_Level     info
+        Daemon        off
+        Parsers_File  parsers.conf
+        HTTP_Server   On
+        HTTP_Listen   0.0.0.0
+        HTTP_Port     2020
+
+    [INPUT]
+        Name              tail
+        Path              /var/log/*.log
+        Parser            json
+        Tag               iot.edge.anomaly.*
+        Refresh_Interval  5
+        Mem_Buf_Limit     50MB
+        Skip_Long_Lines   On
+
+    [FILTER]
+        Name                kubernetes
+        Match               iot.edge.anomaly.*
+        Kube_URL            https://kubernetes.default.svc:443
+        Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
+        Kube_Tag_Prefix     iot.edge.anomaly.
+        Merge_Log           On
+        K8S-Logging.Parser  On
+        K8S-Logging.Exclude Off
+
+    [FILTER]
+        Name          record_modifier
+        Match         iot.edge.anomaly.*
+        Record        service iot-edge-anomaly
+        Record        version v4.0.0
+        Record        environment ${ENVIRONMENT}
+
+    [OUTPUT]
+        Name  stdout
+        Match iot.edge.anomaly.*
+        Format json_lines
+
+    [OUTPUT]
+        Name          forward
+        Match         iot.edge.anomaly.*
+        Host          fluentd.logging.svc.cluster.local
+        Port          24224
+        tls           off
+        tls.verify    off
+
+  parsers.conf: |
+    [PARSER]
+        Name        json
+        Format      json
+        Time_Key    timestamp
+        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+
+    [PARSER]
+        Name        docker
+        Format      json
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L
+        Time_Keep   On
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: iot-edge-anomaly-metrics
+  namespace: iot-edge-anomaly
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: iot-edge-anomaly
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+    honorLabels: true
+    metricRelabelings:
+    - sourceLabels: [__name__]
+      regex: 'go_.*'
+      action: drop
+    - sourceLabels: [__name__]
+      regex: 'process_.*'
+      action: drop
+  namespaceSelector:
+    matchNames:
+    - iot-edge-anomaly
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: iot-edge-anomaly-alerts
+  namespace: iot-edge-anomaly
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: monitoring
+    prometheus: kube-prometheus
+    role: alert-rules
+spec:
+  groups:
+  - name: iot-edge-anomaly.rules
+    interval: 30s
+    rules:
+    - alert: IoTEdgeAnomalyHighCPU
+      expr: |
+        (
+          rate(container_cpu_usage_seconds_total{namespace="iot-edge-anomaly",container="iot-edge-anomaly"}[5m]) * 100
+        ) > 80
+      for: 5m
+      labels:
+        severity: warning
+        service: iot-edge-anomaly
+      annotations:
+        summary: "IoT Edge Anomaly Detection high CPU usage"
+        description: "CPU usage for IoT Edge Anomaly Detection is above 80% for more than 5 minutes"
+
+    - alert: IoTEdgeAnomalyHighMemory
+      expr: |
+        (
+          container_memory_working_set_bytes{namespace="iot-edge-anomaly",container="iot-edge-anomaly"} / 
+          container_spec_memory_limit_bytes{namespace="iot-edge-anomaly",container="iot-edge-anomaly"} * 100
+        ) > 80
+      for: 5m
+      labels:
+        severity: warning
+        service: iot-edge-anomaly
+      annotations:
+        summary: "IoT Edge Anomaly Detection high memory usage"
+        description: "Memory usage for IoT Edge Anomaly Detection is above 80% for more than 5 minutes"
+
+    - alert: IoTEdgeAnomalyPodCrashLooping
+      expr: |
+        rate(kube_pod_container_status_restarts_total{namespace="iot-edge-anomaly"}[15m]) > 0
+      for: 5m
+      labels:
+        severity: critical
+        service: iot-edge-anomaly
+      annotations:
+        summary: "IoT Edge Anomaly Detection pod crash looping"
+        description: "Pod {{ $labels.pod }} is crash looping"
+
+    - alert: IoTEdgeAnomalyHighAnomalyRate
+      expr: |
+        rate(anomalies_detected_total{namespace="iot-edge-anomaly"}[5m]) > 0.1
+      for: 10m
+      labels:
+        severity: warning
+        service: iot-edge-anomaly
+      annotations:
+        summary: "High anomaly detection rate"
+        description: "Anomaly detection rate is above 10% for more than 10 minutes"
+
+    - alert: IoTEdgeAnomalyModelInferenceLatency
+      expr: |
+        histogram_quantile(0.95, 
+          rate(model_inference_duration_seconds_bucket{namespace="iot-edge-anomaly"}[5m])
+        ) > 1
+      for: 5m
+      labels:
+        severity: warning
+        service: iot-edge-anomaly
+      annotations:
+        summary: "High model inference latency"
+        description: "95th percentile inference latency is above 1 second"
+
+    - alert: IoTEdgeAnomalyServiceDown
+      expr: |
+        up{job="iot-edge-anomaly"} == 0
+      for: 1m
+      labels:
+        severity: critical
+        service: iot-edge-anomaly
+      annotations:
+        summary: "IoT Edge Anomaly Detection service is down"
+        description: "IoT Edge Anomaly Detection service has been down for more than 1 minute"
+
+    - alert: IoTEdgeAnomalyHighErrorRate
+      expr: |
+        (
+          rate(http_requests_total{namespace="iot-edge-anomaly",status=~"5.."}[5m]) /
+          rate(http_requests_total{namespace="iot-edge-anomaly"}[5m])
+        ) > 0.05
+      for: 5m
+      labels:
+        severity: warning
+        service: iot-edge-anomaly
+      annotations:
+        summary: "High error rate for IoT Edge Anomaly Detection"
+        description: "Error rate is above 5% for more than 5 minutes"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iot-edge-anomaly-metrics
+  namespace: iot-edge-anomaly
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: metrics
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9090"
+    prometheus.io/path: "/metrics"
+spec:
+  type: ClusterIP
+  ports:
+  - name: metrics
+    port: 9090
+    targetPort: metrics
+    protocol: TCP
+  selector:
+    app: iot-edge-anomaly
