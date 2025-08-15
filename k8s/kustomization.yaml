@@ -1,0 +1,96 @@
+# TERRAGON IoT Edge Anomaly Detection v4.0 - Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: iot-edge-anomaly-v4
+  annotations:
+    config.kubernetes.io/local-config: "true"
+
+# Namespace for all resources
+namespace: iot-edge-anomaly
+
+# Base resources in order of dependencies
+resources:
+- namespace.yaml
+- rbac.yaml
+- storage.yaml
+- configmap.yaml
+- deployment.yaml
+- service.yaml
+- autoscaling.yaml
+- ingress.yaml
+- monitoring.yaml
+- network-policy.yaml
+
+# Common labels applied to all resources
+commonLabels:
+  app.kubernetes.io/name: iot-edge-anomaly
+  app.kubernetes.io/version: "v4.0.0"
+  app.kubernetes.io/component: edge-ai
+  app.kubernetes.io/part-of: terragon-autonomous-sdlc
+  app.kubernetes.io/managed-by: kustomize
+
+# Common annotations
+commonAnnotations:
+  terragon.ai/version: "v4.0.0"
+  terragon.ai/deployment-mode: "kubernetes"
+  terragon.ai/managed-by: "terragon-autonomous-sdlc"
+
+# Image transformations
+images:
+- name: iot-edge-anomaly-v4
+  newTag: latest
+  digest: ""
+- name: fluent/fluent-bit
+  newTag: "2.1.10"
+
+# ConfigMap generators for dynamic configuration
+configMapGenerator:
+- name: iot-edge-anomaly-env-config
+  literals:
+  - TERRAGON_VERSION=v4.0.0
+  - DEPLOYMENT_MODE=kubernetes
+  - ENABLE_MONITORING=true
+  - ENABLE_AUTO_SCALING=true
+  - ENABLE_COMPLIANCE=true
+  - LOG_LEVEL=INFO
+
+# Secret generators (these would be generated from actual secrets)
+secretGenerator:
+- name: iot-edge-anomaly-secrets
+  literals:
+  - api-key=placeholder-api-key
+  - db-password=placeholder-db-password
+  type: Opaque
+
+# Patches for different environments
+patchesStrategicMerge:
+- |-
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: iot-edge-anomaly
+    namespace: iot-edge-anomaly
+  spec:
+    template:
+      spec:
+        containers:
+        - name: iot-edge-anomaly
+          env:
+          - name: TERRAGON_CONFIG_SOURCE
+            value: "kubernetes-configmap"
+
+# Resource transformations
+replicas:
+- name: iot-edge-anomaly
+  count: 3
+
+# Namespace creation configuration
+namespace: iot-edge-anomaly
+
+# Build metadata
+buildMetadata:
+- originAnnotations
+- transformerAnnotations
+- managedByLabel

@@ -1,0 +1,230 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iot-edge-anomaly
+  namespace: iot-edge-anomaly
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/version: "v4.0.0"
+    app.kubernetes.io/component: edge-ai
+    app.kubernetes.io/part-of: terragon-autonomous-sdlc
+    app.kubernetes.io/managed-by: terragon
+spec:
+  replicas: 3
+  revisionHistoryLimit: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: iot-edge-anomaly
+  template:
+    metadata:
+      labels:
+        app: iot-edge-anomaly
+        version: v4.0.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: iot-edge-anomaly
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: iot-edge-anomaly
+        image: iot-edge-anomaly-v4:latest
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+        - name: health
+          containerPort: 8080
+          protocol: TCP
+        - name: metrics
+          containerPort: 9090
+          protocol: TCP
+        env:
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: PYTHONDONTWRITEBYTECODE
+          value: "1"
+        - name: CONFIG_PATH
+          value: "/app/config/config.yaml"
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        # Terragon specific environment variables
+        - name: TERRAGON_VERSION
+          value: "v4.0.0"
+        - name: DEPLOYMENT_MODE
+          value: "kubernetes"
+        - name: ENABLE_AUTO_SCALING
+          value: "true"
+        - name: ENABLE_MONITORING
+          value: "true"
+        - name: ENABLE_COMPLIANCE
+          value: "true"
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+          readOnly: true
+        - name: logs
+          mountPath: /app/logs
+        - name: models
+          mountPath: /app/models
+          readOnly: true
+        - name: tmp
+          mountPath: /tmp
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+            ephemeral-storage: 1Gi
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+            ephemeral-storage: 2Gi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: health
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: health
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+          successThreshold: 1
+        startupProbe:
+          httpGet:
+            path: /startup
+            port: health
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 10
+          successThreshold: 1
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 1000
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+      # Sidecar container for log forwarding
+      - name: log-forwarder
+        image: fluent/fluent-bit:2.1.10
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 2020
+          protocol: TCP
+        env:
+        - name: FLUENT_CONF
+          value: fluent-bit.conf
+        - name: FLUENT_OPT
+          value: ""
+        volumeMounts:
+        - name: fluent-bit-config
+          mountPath: /fluent-bit/etc
+        - name: logs
+          mountPath: /var/log
+          readOnly: true
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 1000
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+      volumes:
+      - name: config
+        configMap:
+          name: iot-edge-anomaly-config
+          defaultMode: 0644
+      - name: logs
+        emptyDir: {}
+      - name: models
+        persistentVolumeClaim:
+          claimName: iot-edge-models-pvc
+      - name: tmp
+        emptyDir: {}
+      - name: fluent-bit-config
+        configMap:
+          name: fluent-bit-config
+          defaultMode: 0644
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        kubernetes.io/os: linux
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - iot-edge-anomaly
+              topologyKey: kubernetes.io/hostname
+      tolerations:
+      - key: "edge-node"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+      - key: "node.kubernetes.io/not-ready"
+        operator: "Exists"
+        effect: "NoExecute"
+        tolerationSeconds: 300
+      - key: "node.kubernetes.io/unreachable"
+        operator: "Exists"
+        effect: "NoExecute"
+        tolerationSeconds: 300

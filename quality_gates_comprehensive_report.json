@@ -1,0 +1,333 @@
+{
+  "timestamp": "2025-08-14T23:39:49.422168",
+  "overall_status": "FAILED",
+  "overall_score": 91.42857142857143,
+  "summary": {
+    "total_gates": 17,
+    "passed": 15,
+    "failed": 2,
+    "warnings": 0,
+    "success_rate": 88.23529411764706
+  },
+  "execution_time": 13.50821042060852,
+  "results": [
+    {
+      "name": "Code Execution",
+      "status": "FAILED",
+      "score": null,
+      "threshold": null,
+      "message": "Import failed: Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nModuleNotFoundError: No module named 'iot_edge_anomaly'\n",
+      "execution_time": 0.039337873458862305,
+      "details": {}
+    },
+    {
+      "name": "Test Coverage",
+      "status": "FAILED",
+      "score": 70.0,
+      "threshold": 85.0,
+      "message": "Estimated coverage: 70.0% (17 test files, 34 source files)",
+      "execution_time": 0.009172677993774414,
+      "details": {
+        "test_files": 17,
+        "source_files": 34,
+        "comprehensive_tests_found": [
+          "test_main_app.py",
+          "test_lstm_autoencoder.py",
+          "test_advanced_integration.py",
+          "test_comprehensive_framework.py"
+        ]
+      }
+    },
+    {
+      "name": "Code Quality",
+      "status": "PASSED",
+      "score": 10.0,
+      "threshold": 8.0,
+      "message": "Code quality score: 10.0/10.0",
+      "execution_time": 0.0004162788391113281,
+      "details": {
+        "module_structure": "\u2705 Proper src/ structure",
+        "configuration": "\u2705 Config files: ['pyproject.toml', 'setup.py', 'requirements.txt']",
+        "documentation": "\u2705 Documentation files: ['README.md', 'CHANGELOG.md', 'LICENSE']",
+        "advanced_features": "\u2705 Advanced implementations: 3/3"
+      }
+    },
+    {
+      "name": "Module Structure",
+      "status": "PASSED",
+      "score": null,
+      "threshold": null,
+      "message": "All key modules present (40 total modules)",
+      "execution_time": 0.0018625259399414062,
+      "details": {
+        "total_modules": 40
+      }
+    },
+    {
+      "name": "Reproducibility",
+      "status": "PASSED",
+      "score": 75,
+      "threshold": 75.0,
+      "message": "Reproducibility features: 3/4",
+      "execution_time": 0.010977506637573242,
+      "details": {
+        "features": [
+          "Configuration management system",
+          "Research framework (1 files)",
+          "Benchmarking system"
+        ]
+      }
+    },
+    {
+      "name": "Statistical Significance",
+      "status": "PASSED",
+      "score": 100.0,
+      "threshold": 60.0,
+      "message": "Statistical evidence found: 4 sources",
+      "execution_time": 0.11422014236450195,
+      "details": {
+        "evidence": [
+          "Statistical analysis in causal_discovery_network.py",
+          "Statistical analysis in model_validator.py",
+          "Statistical validation in comparative_analysis.py",
+          "Performance metrics documented"
+        ]
+      }
+    },
+    {
+      "name": "Baseline Comparisons",
+      "status": "PASSED",
+      "score": 100.0,
+      "threshold": 50.0,
+      "message": "Baseline comparison evidence: 6 sources",
+      "execution_time": 0.006501674652099609,
+      "details": {
+        "evidence": [
+          "Comparative analysis framework",
+          "Benchmarking system",
+          "Performance benchmarks documented",
+          "Baseline comparisons in gnn_layer.py",
+          "Baseline comparisons in fault_tolerance.py",
+          "Baseline comparisons in model_validator.py"
+        ]
+      }
+    },
+    {
+      "name": "Research Methodology",
+      "status": "PASSED",
+      "score": 100,
+      "threshold": 60.0,
+      "message": "Methodology documentation score: 100/100",
+      "execution_time": 0.0037255287170410156,
+      "details": {
+        "evidence": [
+          "'algorithm' documented in README",
+          "'framework' documented in README",
+          "'architecture' documented in README",
+          "'implementation' documented in README",
+          "'evaluation' documented in README",
+          "Research documentation (25 files)",
+          "Architecture documentation",
+          "Academic references included"
+        ]
+      }
+    },
+    {
+      "name": "Dependency Security",
+      "status": "PASSED",
+      "score": 100,
+      "threshold": 90.0,
+      "message": "Security score: 100/100",
+      "execution_time": 0.0011260509490966797,
+      "details": {
+        "evidence": [
+          "Security package: safety",
+          "Security package: bandit",
+          "Security modules: 3 files"
+        ]
+      }
+    },
+    {
+      "name": "Security Patterns",
+      "status": "PASSED",
+      "score": 100,
+      "threshold": 60.0,
+      "message": "Security patterns found: 14",
+      "execution_time": 0.019792795181274414,
+      "details": {
+        "patterns": [
+          "Security pattern in advanced_main.py",
+          "Security pattern in circuit_breaker.py",
+          "Security pattern in config_validator.py",
+          "Security pattern in main.py",
+          "Security pattern in validation_utils.py",
+          "Security pattern in swat_loader.py",
+          "Security pattern in lstm_autoencoder.py",
+          "Security pattern in physics_informed_hybrid.py",
+          "Security pattern in fault_tolerance.py",
+          "Security pattern in advanced_fault_tolerance.py",
+          "Security pattern in secure_inference.py",
+          "Security pattern in advanced_security.py",
+          "Security pattern in __init__.py",
+          "Security pattern in model_validator.py"
+        ]
+      }
+    },
+    {
+      "name": "Secrets Detection",
+      "status": "PASSED",
+      "score": null,
+      "threshold": null,
+      "message": "No exposed secrets detected",
+      "execution_time": 13.274855375289917,
+      "details": {}
+    },
+    {
+      "name": "Performance Benchmarks",
+      "status": "PASSED",
+      "score": 100,
+      "threshold": 75.0,
+      "message": "Performance evidence: 4 sources",
+      "execution_time": 0.0019559860229492188,
+      "details": {
+        "evidence": [
+          "Benchmark script",
+          "Performance tests (1 files)",
+          "Performance metrics documented",
+          "Optimization modules (2 files)"
+        ]
+      }
+    },
+    {
+      "name": "Memory Usage",
+      "status": "PASSED",
+      "score": 100,
+      "threshold": 50.0,
+      "message": "Memory optimizations found: 29",
+      "execution_time": 0.004458427429199219,
+      "details": {
+        "optimizations": [
+          "Memory optimization in __init__.py",
+          "Memory optimization in advanced_main.py",
+          "Memory optimization in async_processor.py",
+          "Memory optimization in config_validator.py",
+          "Memory optimization in health.py",
+          "Memory optimization in main.py",
+          "Memory optimization in performance_optimizer.py",
+          "Memory optimization in validation_utils.py",
+          "Memory optimization in advanced_hybrid_integration.py",
+          "Memory optimization in causal_discovery_network.py",
+          "Memory optimization in continual_learning_network.py",
+          "Memory optimization in federated_learning.py",
+          "Memory optimization in lstm_autoencoder.py",
+          "Memory optimization in lstm_gnn_hybrid.py",
+          "Memory optimization in physics_informed_hybrid.py",
+          "Memory optimization in self_supervised_registration.py",
+          "Memory optimization in simple_ensemble.py",
+          "Memory optimization in sparse_graph_attention.py",
+          "Memory optimization in transformer_vae.py",
+          "Memory optimization in advanced_metrics.py",
+          "Memory optimization in metrics_exporter.py",
+          "Memory optimization in performance_optimizer.py",
+          "Memory optimization in advanced_performance_optimization.py",
+          "Memory optimization in fault_tolerance.py",
+          "Memory optimization in advanced_fault_tolerance.py",
+          "Memory optimization in secure_inference.py",
+          "Memory optimization in advanced_security.py",
+          "Memory optimization in model_validator.py",
+          "Memory optimization in auto_scaling_system.py"
+        ]
+      }
+    },
+    {
+      "name": "Inference Speed",
+      "status": "PASSED",
+      "score": 100,
+      "threshold": 60.0,
+      "message": "Speed optimizations found: 15",
+      "execution_time": 0.010803937911987305,
+      "details": {
+        "optimizations": [
+          "Speed optimization in advanced_main.py",
+          "Speed optimization in async_processor.py",
+          "Speed optimization in main.py",
+          "Speed optimization in performance_optimizer.py",
+          "Speed optimization in multimodal_fusion_network.py",
+          "Speed optimization in neuromorphic_spiking.py",
+          "Speed optimization in sparse_graph_attention.py",
+          "Speed optimization in transformer_vae.py",
+          "Speed optimization in advanced_metrics.py",
+          "Speed optimization in performance_optimizer.py",
+          "Speed optimization in advanced_performance_optimization.py",
+          "Speed optimization in fault_tolerance.py",
+          "Speed optimization in advanced_fault_tolerance.py",
+          "Speed optimization in model_validator.py",
+          "Speed optimization in auto_scaling_system.py"
+        ]
+      }
+    },
+    {
+      "name": "Documentation Coverage",
+      "status": "PASSED",
+      "score": 100,
+      "threshold": 80.0,
+      "message": "Documentation score: 100.0/100",
+      "execution_time": 0.0024590492248535156,
+      "details": {
+        "documentation": [
+          "\u2705 README.md",
+          "\u2705 CHANGELOG.md",
+          "\u2705 LICENSE",
+          "\u2705 Documentation directory (25 files)",
+          "\u2705 Docstring coverage: 100.0%"
+        ]
+      }
+    },
+    {
+      "name": "API Documentation",
+      "status": "PASSED",
+      "score": 125,
+      "threshold": 75.0,
+      "message": "API documentation score: 125/100",
+      "execution_time": 0.00022673606872558594,
+      "details": {
+        "documentation": [
+          "\u2705 Main API: src/iot_edge_anomaly/main.py",
+          "\u2705 Main API: src/iot_edge_anomaly/advanced_main.py",
+          "\u2705 Usage examples (1 files)",
+          "\u2705 API usage in README",
+          "\u2705 Configuration examples"
+        ]
+      }
+    },
+    {
+      "name": "Research Documentation",
+      "status": "PASSED",
+      "score": 100,
+      "threshold": 60.0,
+      "message": "Research documentation score: 100/100",
+      "execution_time": 0.00043272972106933594,
+      "details": {
+        "documentation": [
+          "Research keyword: algorithm",
+          "Research keyword: research",
+          "Research keyword: paper",
+          "Research keyword: benchmark",
+          "Research keyword: evaluation",
+          "Research keyword: performance",
+          "Research keyword: accuracy",
+          "\u2705 Performance metrics documented",
+          "\u2705 Research directory exists"
+        ]
+      }
+    }
+  ],
+  "thresholds": {
+    "test_coverage": 85.0,
+    "security_score": 90.0,
+    "performance_p95": 1000.0,
+    "documentation_coverage": 80.0,
+    "code_quality_score": 8.0,
+    "statistical_significance": 0.05
+  }
+}

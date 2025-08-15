@@ -1,0 +1,107 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: iot-edge-anomaly
+  namespace: iot-edge-anomaly
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: rbac
+automountServiceAccountToken: true
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: iot-edge-anomaly-role
+  namespace: iot-edge-anomaly
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: rbac
+rules:
+# ConfigMap permissions for configuration management
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list", "watch"]
+# Secret permissions for credentials management
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch"]
+# Pod permissions for self-introspection
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+  resourceNames: []
+# Service permissions for service discovery
+- apiGroups: [""]
+  resources: ["services", "endpoints"]
+  verbs: ["get", "list", "watch"]
+# Event permissions for logging
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["create", "patch"]
+# PVC permissions for model storage
+- apiGroups: [""]
+  resources: ["persistentvolumeclaims"]
+  verbs: ["get", "list", "watch"]
+# Metrics permissions
+- apiGroups: ["metrics.k8s.io"]
+  resources: ["nodes", "pods"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: iot-edge-anomaly-rolebinding
+  namespace: iot-edge-anomaly
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: rbac
+subjects:
+- kind: ServiceAccount
+  name: iot-edge-anomaly
+  namespace: iot-edge-anomaly
+roleRef:
+  kind: Role
+  name: iot-edge-anomaly-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: iot-edge-anomaly-cluster-role
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: rbac
+rules:
+# Node metrics access for auto-scaling decisions
+- apiGroups: [""]
+  resources: ["nodes", "nodes/metrics", "nodes/stats"]
+  verbs: ["get", "list"]
+# Custom resource definitions for monitoring
+- apiGroups: ["apiextensions.k8s.io"]
+  resources: ["customresourcedefinitions"]
+  verbs: ["get", "list"]
+# Metrics server access
+- apiGroups: ["metrics.k8s.io"]
+  resources: ["nodes", "pods"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: iot-edge-anomaly-cluster-rolebinding
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: rbac
+subjects:
+- kind: ServiceAccount
+  name: iot-edge-anomaly
+  namespace: iot-edge-anomaly
+roleRef:
+  kind: ClusterRole
+  name: iot-edge-anomaly-cluster-role
+  apiGroup: rbac.authorization.k8s.io

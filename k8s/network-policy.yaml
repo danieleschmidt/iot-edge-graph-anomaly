@@ -1,0 +1,98 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: iot-edge-anomaly-network-policy
+  namespace: iot-edge-anomaly
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: security
+spec:
+  podSelector:
+    matchLabels:
+      app: iot-edge-anomaly
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow ingress from ingress controller
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    ports:
+    - protocol: TCP
+      port: 8000
+  # Allow ingress from monitoring namespace
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    ports:
+    - protocol: TCP
+      port: 9090
+  # Allow ingress from same namespace for service communication
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: iot-edge-anomaly
+    ports:
+    - protocol: TCP
+      port: 8000
+    - protocol: TCP
+      port: 8080
+    - protocol: TCP
+      port: 9090
+  # Allow health checks from kubelet
+  - from: []
+    ports:
+    - protocol: TCP
+      port: 8080
+  egress:
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  # Allow access to Kubernetes API server
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 443
+  # Allow access to external services (configurable)
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443
+  # Allow communication within namespace
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: iot-edge-anomaly
+  # Allow access to logging services
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: logging
+    ports:
+    - protocol: TCP
+      port: 24224
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-all-default
+  namespace: iot-edge-anomaly
+  labels:
+    app: iot-edge-anomaly
+    app.kubernetes.io/name: iot-edge-anomaly
+    app.kubernetes.io/component: security
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
