@@ -1,21 +1,27 @@
 version: '3.8'
 
 services:
-  # ── IOT EDGE ANOMALY DETECTION APP ──
-  iot-edge-anomaly:
+  # ── TERRAGON IOT EDGE ANOMALY DETECTION v4.0 ──
+  terragon-edge-ai:
     build:
       context: .
       dockerfile: Dockerfile
       target: production
-    container_name: iot-edge-anomaly
+    container_name: terragon-edge-ai
     restart: unless-stopped
     environment:
       - LOG_LEVEL=INFO
-      - ANOMALY_THRESHOLD=0.5
+      - PYTHONPATH=/app/src
+      - DEPLOYMENT_ENV=production
+      - MODEL_CACHE_DIR=/app/cache
+      - ENABLE_MONITORING=true
+      - ENABLE_TELEMETRY=true
+      - ENABLE_ADVANCED_MODELS=true
+      - ENABLE_ENSEMBLE=true
       - OTLP_ENDPOINT=http://otel-collector:4317
       - PROMETHEUS_PORT=9090
       - HEALTH_CHECK_PORT=8080
-      - DEVICE_ID=edge-device-001
+      - DEVICE_ID=terragon-edge-001
     ports:
       - "8000:8000"   # Application port
       - "8080:8080"   # Health check port
@@ -23,7 +29,9 @@ services:
     volumes:
       - ./models:/app/models:ro
       - ./data:/app/data:ro
-      - ./logs:/app/logs
+      - ./config:/app/config:ro
+      - terragon_cache:/app/cache
+      - terragon_logs:/app/logs
     networks:
       - iot-network
     depends_on:
@@ -32,11 +40,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 256M
+          cpus: '2.0'
+          memory: 2G
         reservations:
-          cpus: '0.25'
-          memory: 128M
+          cpus: '0.5'
+          memory: 512M
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s
@@ -182,6 +190,10 @@ networks:
 
 # ── VOLUMES ──
 volumes:
+  terragon_cache:
+    driver: local
+  terragon_logs:
+    driver: local
   prometheus_data:
     driver: local
   grafana_data:

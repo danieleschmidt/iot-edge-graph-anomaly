@@ -1,6 +1,7 @@
-# Multi-stage build for minimal IoT edge deployment
+# Production Multi-stage Build for Terragon IoT Edge Anomaly Detection v4.0
+# Optimized for edge deployment with advanced AI capabilities
 # Stage 1: Builder - Install dependencies and build wheel
-FROM --platform=linux/arm64 python:3.13-slim as builder
+FROM --platform=linux/arm64 python:3.12-slim as builder
 
 WORKDIR /build
 
@@ -21,7 +22,7 @@ COPY setup.py ./
 RUN pip wheel --no-deps --wheel-dir /build/dist .
 
 # Stage 2: Runtime - Minimal production image
-FROM --platform=linux/arm64 python:3.13-slim
+FROM --platform=linux/arm64 python:3.12-slim
 
 # Create non-root user for security
 RUN groupadd -r iotuser && useradd -r -g iotuser iotuser
@@ -58,5 +59,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
 # Expose port for metrics
 EXPOSE 8080
 
-# Default command
-CMD ["python", "-m", "iot_edge_anomaly.main"]
+# Default command - Use advanced main with full capability
+CMD ["python", "-m", "iot_edge_anomaly.advanced_main", "--config", "config/default.yaml"]

@@ -134,7 +134,7 @@ class TestDataProcessingUnit:
         # Mock sequence generation
         sequences = []
         for i in range(len(data) - sequence_length + 1):
-            sequences.append(data[i:i + sequence_length])
+            sequences.append(data[i:i + sequence_length].tolist())
         
         expected_sequences = [
             [0, 1, 2], [1, 2, 3], [2, 3, 4], [3, 4, 5],
