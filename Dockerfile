@@ -1,7 +1,7 @@
 # Production Multi-stage Build for Terragon IoT Edge Anomaly Detection v4.0
 # Optimized for edge deployment with advanced AI capabilities
 # Stage 1: Builder - Install dependencies and build wheel
-FROM --platform=linux/arm64 python:3.12-slim as builder
+FROM --platform=linux/arm64 python:3.13.7-slim as builder
 
 WORKDIR /build
 
@@ -22,7 +22,7 @@ COPY setup.py ./
 RUN pip wheel --no-deps --wheel-dir /build/dist .
 
 # Stage 2: Runtime - Minimal production image
-FROM --platform=linux/arm64 python:3.12-slim
+FROM --platform=linux/arm64 python:3.13.7-slim
 
 # Create non-root user for security
 RUN groupadd -r iotuser && useradd -r -g iotuser iotuser
