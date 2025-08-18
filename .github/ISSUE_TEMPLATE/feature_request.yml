@@ -1,0 +1,150 @@
+name: 🚀 Feature Request
+description: Suggest a new feature or enhancement for the IoT Edge Anomaly Detection System
+title: "[FEATURE] "
+labels: ["enhancement", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting a new feature! Please provide detailed information to help us understand and prioritize your request.
+
+  - type: checkboxes
+    id: pre-checks
+    attributes:
+      label: Pre-submission Checklist
+      description: Please verify you have completed these steps
+      options:
+        - label: I have searched existing issues and feature requests
+          required: true
+        - label: I have checked the project roadmap for similar features
+          required: true
+        - label: This feature aligns with the project's scope and vision
+          required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Feature Category
+      description: What type of feature is this?
+      options:
+        - Model Architecture (LSTM, GNN, algorithms)
+        - Data Processing (preprocessing, validation, formats)
+        - Edge Deployment (optimization, container, hardware)
+        - Monitoring & Observability (metrics, dashboards, alerting)
+        - Security & Compliance (authentication, encryption, auditing)
+        - API & Integration (REST API, webhooks, connectors)
+        - Developer Experience (tooling, documentation, testing)
+        - Performance & Scalability (optimization, caching, load balancing)
+        - Other (specify in description)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority Level
+      description: How important is this feature to you?
+      options:
+        - Critical (blocking current work)
+        - High (important for productivity)
+        - Medium (nice to have)
+        - Low (future enhancement)
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve?
+      placeholder: |
+        Describe the current limitation or challenge you're facing:
+        - What task are you trying to accomplish?
+        - What makes it difficult or impossible currently?
+        - Who would benefit from this feature?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe your suggested implementation
+      placeholder: |
+        Provide a clear description of how you'd like this feature to work:
+        - What should the feature do?
+        - How should users interact with it?
+        - What should the API/interface look like?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative Solutions
+      description: Have you considered any alternative approaches?
+      placeholder: |
+        Describe alternative solutions you've considered:
+        - Different implementation approaches
+        - Workarounds you're currently using
+        - Similar features in other tools
+    validations:
+      required: false
+
+  - type: textarea
+    id: use-cases
+    attributes:
+      label: Use Cases
+      description: Provide specific use cases for this feature
+      placeholder: |
+        Example use cases:
+        1. As a [role], I want to [action] so that [benefit]
+        2. When [scenario], I need [capability] to achieve [goal]
+        3. In [environment/context], this feature would help [outcome]
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: How will we know when this feature is complete?
+      placeholder: |
+        Define success criteria:
+        - [ ] Feature accomplishes X
+        - [ ] Performance meets Y requirements
+        - [ ] Documentation includes Z
+        - [ ] Tests cover A, B, C scenarios
+    validations:
+      required: false
+
+  - type: textarea
+    id: technical-considerations
+    attributes:
+      label: Technical Considerations
+      description: Any technical details, constraints, or requirements?
+      placeholder: |
+        Consider:
+        - Performance impact
+        - Memory/resource requirements
+        - Backward compatibility
+        - Security implications
+        - Integration requirements
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other information that might be helpful
+      placeholder: |
+        Include:
+        - Links to relevant documentation
+        - Screenshots or mockups
+        - Related issues or PRs
+        - Research or benchmarks
+    validations:
+      required: false
