@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🔒 Security Vulnerability Report
+    url: mailto:security@terragonlabs.com
+    about: Report security vulnerabilities privately to our security team
+  
+  - name: 💬 Discussions & Questions
+    url: https://github.com/terragon-labs/iot-edge-anomaly-detection/discussions
+    about: Ask questions, share ideas, and discuss the project with the community
+  
+  - name: 📚 Documentation
+    url: https://docs.terragonlabs.com/iot-edge-anomaly-detection
+    about: Browse comprehensive documentation, guides, and tutorials
+  
+  - name: 🏥 System Health Check
+    url: https://status.terragonlabs.com
+    about: Check current system status and service availability

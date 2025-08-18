@@ -26,22 +26,100 @@ The IoT Edge Graph Anomaly Detection system is designed for deployment on resour
 
 ## System Components
 
-### Core ML Pipeline
+### High-Level System Architecture
+
+```mermaid
+graph TB
+    subgraph "Edge Device"
+        subgraph "Data Layer"
+            A1[IoT Sensors] --> A2[Data Ingestion]
+            A2 --> A3[Preprocessing Pipeline]
+            A3 --> A4[Feature Engineering]
+        end
+        
+        subgraph "AI/ML Layer"
+            A4 --> B1[Advanced Ensemble System]
+            B1 --> B2[Transformer-VAE]
+            B1 --> B3[Sparse Graph Attention]
+            B1 --> B4[Physics-Informed Model]
+            B1 --> B5[Self-Supervised Learning]
+            B2 & B3 & B4 & B5 --> B6[Dynamic Ensemble Weighting]
+        end
+        
+        subgraph "Decision Layer"
+            B6 --> C1[Uncertainty Quantification]
+            C1 --> C2[Anomaly Classification]
+            C2 --> C3[Alert Generation]
+            C3 --> C4[Action Execution]
+        end
+        
+        subgraph "Observability Layer"
+            C4 --> D1[Metrics Collection]
+            D1 --> D2[Health Monitoring]
+            D2 --> D3[Performance Analytics]
+        end
+    end
+    
+    subgraph "Cloud Infrastructure"
+        subgraph "Federated Learning"
+            E1[Global Model Aggregation]
+            E2[Privacy-Preserving Updates]
+            E3[Byzantine-Robust Consensus]
+        end
+        
+        subgraph "Monitoring & Analytics"
+            F1[Centralized Monitoring]
+            F2[Performance Dashboards]
+            F3[Model Performance Tracking]
+        end
+    end
+    
+    D3 --> F1
+    B1 --> E1
+    E1 --> B1
+```
+
+### Core ML Pipeline - Detailed View
 
 ```mermaid
 graph LR
-    A[Sensor Data] --> B[Data Preprocessing]
-    B --> C[Sequence Generation]
-    C --> D[LSTM Autoencoder]
-    D --> E[Reconstruction Error]
-    E --> F[Anomaly Detection]
-    F --> G[Alert Generation]
+    subgraph "Data Processing"
+        A[Raw Sensor Data] --> B[Validation & Sanitization]
+        B --> C[Normalization & Scaling]
+        C --> D[Sequence Generation]
+        D --> E[Feature Engineering]
+    end
     
-    H[Graph Structure] --> I[GNN Layer]
-    I --> D
+    subgraph "AI Model Ensemble"
+        E --> F1[Transformer-VAE]
+        E --> F2[Sparse GAT Network]
+        E --> F3[Physics-Informed NN]
+        E --> F4[Self-Supervised Model]
+        
+        F1 --> G[Dynamic Ensemble Weighting]
+        F2 --> G
+        F3 --> G
+        F4 --> G
+    end
     
-    F --> J[Metrics Export]
-    J --> K[Monitoring Stack]
+    subgraph "Decision & Action"
+        G --> H[Uncertainty Quantification]
+        H --> I[Anomaly Scoring]
+        I --> J[Threshold Adaptation]
+        J --> K[Classification Decision]
+        K --> L[Alert Generation]
+        L --> M[Response Actions]
+    end
+    
+    subgraph "Feedback & Learning"
+        M --> N[Performance Metrics]
+        N --> O[Model Adaptation]
+        O --> F1 & F2 & F3 & F4
+        
+        K --> P[Federated Updates]
+        P --> Q[Global Knowledge Sharing]
+        Q --> G
+    end
 ```
 
 #### 1. Data Ingestion Layer
@@ -115,30 +193,119 @@ graph TB
 
 ```mermaid
 graph TB
-    subgraph "Edge Device"
-        A[IoT Sensors] --> B[Edge Gateway]
-        B --> C[Docker Container]
+    subgraph "Edge Computing Layer"
+        subgraph "Industrial IoT Network"
+            A1[Manufacturing Sensors] --> A2[Network Gateway]
+            A3[Water Treatment Sensors] --> A2
+            A4[Energy Grid Sensors] --> A2
+            A2 --> A5[Edge Processing Unit]
+        end
         
-        subgraph "Container Runtime"
-            C --> D[Application Process]
-            D --> E[LSTM Model]
-            D --> F[Metrics Exporter]
-            D --> G[Health Monitor]
+        subgraph "Edge Device Runtime"
+            A5 --> B1[Container Orchestration]
+            B1 --> B2[Security Container]
+            B1 --> B3[AI Model Container]
+            B1 --> B4[Monitoring Container]
+            
+            subgraph "AI Model Container"
+                B3 --> C1[Model Ensemble Manager]
+                C1 --> C2[Transformer-VAE Engine]
+                C1 --> C3[Graph Attention Engine] 
+                C1 --> C4[Physics-Informed Engine]
+                C1 --> C5[Federated Learning Client]
+            end
+            
+            subgraph "Security Container"
+                B2 --> D1[Authentication Service]
+                B2 --> D2[Encryption Engine]
+                B2 --> D3[Compliance Monitor]
+                B2 --> D4[Threat Detection]
+            end
         end
     end
     
-    subgraph "Monitoring Infrastructure"
-        F --> H[OTel Collector]
-        H --> I[Prometheus]
-        I --> J[Grafana]
-        G --> K[Health Dashboard]
+    subgraph "Cloud Infrastructure"
+        subgraph "Federated Learning Network"
+            E1[Global Model Registry] --> E2[Aggregation Server]
+            E2 --> E3[Byzantine-Robust Consensus]
+            E3 --> E4[Privacy-Preserving Updates]
+        end
+        
+        subgraph "Monitoring & Analytics"
+            F1[Centralized SIEM] --> F2[Security Operations Center]
+            F3[Performance Analytics] --> F4[Predictive Maintenance]
+            F5[Compliance Dashboard] --> F6[Regulatory Reporting]
+        end
+        
+        subgraph "Management Plane"
+            G1[Multi-Tenant Config Management] --> G2[OTA Update Service]
+            G3[Model Lifecycle Management] --> G4[A/B Testing Framework]
+            G5[Incident Response System] --> G6[Auto-Recovery Mechanisms]
+        end
     end
     
-    subgraph "Management Plane"
-        L[Model Registry] --> C
-        M[Configuration Management] --> C
-        N[OTA Updates] --> C
+    C5 --> E2
+    B4 --> F1
+    D3 --> F5
+    G2 --> B1
+    G3 --> C1
+```
+
+### Security Architecture
+
+```mermaid
+graph TB
+    subgraph "Defense in Depth Security Model"
+        subgraph "Perimeter Security"
+            A1[Network Firewall] --> A2[VPN Gateway]
+            A2 --> A3[DDoS Protection]
+            A3 --> A4[Intrusion Detection]
+        end
+        
+        subgraph "Device Security"
+            A4 --> B1[Hardware Security Module]
+            B1 --> B2[Secure Boot Chain]
+            B2 --> B3[Container Runtime Security]
+            B3 --> B4[Process Isolation]
+        end
+        
+        subgraph "Application Security"
+            B4 --> C1[Zero-Trust Authentication]
+            C1 --> C2[End-to-End Encryption]
+            C2 --> C3[Input Validation]
+            C3 --> C4[Output Sanitization]
+        end
+        
+        subgraph "Data Security"
+            C4 --> D1[Encryption at Rest]
+            D1 --> D2[Encryption in Transit]
+            D2 --> D3[Data Classification]
+            D3 --> D4[Secure Deletion]
+        end
+        
+        subgraph "AI/ML Security"
+            D4 --> E1[Model Integrity Verification]
+            E1 --> E2[Adversarial Attack Protection]
+            E2 --> E3[Privacy-Preserving Learning]
+            E3 --> E4[Differential Privacy]
+        end
+        
+        subgraph "Monitoring & Response"
+            E4 --> F1[Security Information & Event Management]
+            F1 --> F2[Automated Threat Response]
+            F2 --> F3[Incident Response Workflow]
+            F3 --> F4[Forensic Analysis]
+        end
     end
+    
+    subgraph "Compliance & Governance"
+        G1[GDPR Compliance Engine] --> G2[SOC 2 Type II Framework]
+        G2 --> G3[ISO 27001 Implementation]
+        G3 --> G4[NIST Cybersecurity Framework]
+        G4 --> G5[Industry-Specific Regulations]
+    end
+    
+    F4 --> G1
 ```
 
 ## Data Flow

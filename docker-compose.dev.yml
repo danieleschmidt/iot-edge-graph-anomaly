@@ -1,0 +1,203 @@
+version: '3.8'
+
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: iot-edge-anomaly-dev
+    volumes:
+      - .:/workspace:cached
+      - /var/run/docker.sock:/var/run/docker.sock
+      - iot-edge-anomaly-cache:/home/vscode/.cache
+      - iot-edge-anomaly-pip:/home/vscode/.local
+    working_dir: /workspace
+    environment:
+      - PYTHONPATH=/workspace/src
+      - DOCKER_BUILDKIT=1
+      - TZ=UTC
+    ports:
+      - "8000:8000"   # Application API
+      - "8080:8080"   # Health check
+      - "8888:8888"   # Jupyter Lab
+      - "9090:9090"   # Prometheus
+      - "3000:3000"   # Grafana
+      - "4317:4317"   # OTLP Collector
+      - "16686:16686" # Jaeger UI
+    depends_on:
+      - prometheus
+      - grafana
+      - otel-collector
+      - redis
+    networks:
+      - iot-edge-dev
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: iot-edge-prometheus-dev
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - iot-edge-dev
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: iot-edge-grafana-dev
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - iot-edge-dev
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: iot-edge-otel-dev
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./monitoring/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+      - "8888:8888"   # Metrics endpoint
+    depends_on:
+      - prometheus
+    networks:
+      - iot-edge-dev
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: iot-edge-jaeger-dev
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - "16686:16686" # Jaeger UI
+      - "14268:14268" # Jaeger collector
+    networks:
+      - iot-edge-dev
+
+  redis:
+    image: redis:7-alpine
+    container_name: iot-edge-redis-dev
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - iot-edge-dev
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: iot-edge-postgres-dev
+    environment:
+      - POSTGRES_DB=iot_edge_anomaly
+      - POSTGRES_USER=developer
+      - POSTGRES_PASSWORD=development
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - iot-edge-dev
+
+  minio:
+    image: minio/minio:latest
+    container_name: iot-edge-minio-dev
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - minio-data:/data
+    ports:
+      - "9000:9000"   # API
+      - "9001:9001"   # Console
+    networks:
+      - iot-edge-dev
+
+  mlflow:
+    image: python:3.11-slim
+    container_name: iot-edge-mlflow-dev
+    command: >
+      bash -c "
+        pip install mlflow psycopg2-binary boto3 &&
+        mlflow server
+          --backend-store-uri postgresql://developer:development@postgres:5432/iot_edge_anomaly
+          --default-artifact-root s3://mlflow/
+          --host 0.0.0.0
+          --port 5000
+      "
+    environment:
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+      - AWS_ACCESS_KEY_ID=minioadmin
+      - AWS_SECRET_ACCESS_KEY=minioadmin
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+      - minio
+    networks:
+      - iot-edge-dev
+
+  jupyter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: iot-edge-jupyter-dev
+    command: >
+      bash -c "
+        pip install jupyter jupyterlab &&
+        jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root
+          --notebook-dir=/workspace/notebooks
+          --ServerApp.token=''
+          --ServerApp.password=''
+      "
+    volumes:
+      - .:/workspace:cached
+    working_dir: /workspace
+    environment:
+      - PYTHONPATH=/workspace/src
+    ports:
+      - "8888:8888"
+    networks:
+      - iot-edge-dev
+
+networks:
+  iot-edge-dev:
+    driver: bridge
+
+volumes:
+  iot-edge-anomaly-cache:
+    driver: local
+  iot-edge-anomaly-pip:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+  redis-data:
+    driver: local
+  postgres-data:
+    driver: local
+  minio-data:
+    driver: local

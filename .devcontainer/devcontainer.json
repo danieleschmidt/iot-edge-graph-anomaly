@@ -1,10 +1,31 @@
 {
-    "name": "IoT Edge Graph Anomaly Detection",
+    "name": "IoT Edge Graph Anomaly Detection - Advanced Dev Environment",
     "image": "mcr.microsoft.com/devcontainers/python:3.11",
     "features": {
-        "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-        "ghcr.io/devcontainers/features/git:1": {},
-        "ghcr.io/devcontainers/features/github-cli:1": {}
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "version": "latest",
+            "enableNonRootDocker": true
+        },
+        "ghcr.io/devcontainers/features/git:1": {
+            "version": "latest",
+            "ppa": true
+        },
+        "ghcr.io/devcontainers/features/github-cli:1": {
+            "version": "latest"
+        },
+        "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+            "version": "latest",
+            "helm": "latest",
+            "minikube": "latest"
+        },
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "installZsh": true,
+            "configureZshAsDefaultShell": true,
+            "installOhMyZsh": true,
+            "username": "vscode",
+            "uid": "1000",
+            "gid": "1000"
+        }
     },
     "customizations": {
         "vscode": {
@@ -13,13 +34,33 @@
                 "python.linting.enabled": true,
                 "python.linting.pylintEnabled": false,
                 "python.linting.flake8Enabled": true,
+                "python.linting.mypyEnabled": true,
                 "python.formatting.provider": "black",
+                "python.sortImports.provider": "isort",
                 "python.testing.pytestEnabled": true,
                 "python.testing.unittestEnabled": false,
+                "python.testing.pytestArgs": [
+                    "tests"
+                ],
                 "editor.formatOnSave": true,
                 "editor.codeActionsOnSave": {
                     "source.organizeImports": true
-                }
+                },
+                "files.watcherExclude": {
+                    "**/.git/objects/**": true,
+                    "**/.git/subtree-cache/**": true,
+                    "**/node_modules/*/**": true,
+                    "**/__pycache__/**": true,
+                    "**/.pytest_cache/**": true,
+                    "**/.mypy_cache/**": true,
+                    "**/htmlcov/**": true,
+                    "**/.coverage": true
+                },
+                "python.analysis.typeCheckingMode": "basic",
+                "python.analysis.autoImportCompletions": true,
+                "editor.rulers": [88],
+                "files.trimTrailingWhitespace": true,
+                "files.insertFinalNewline": true
             },
             "extensions": [
                 "ms-python.python",
@@ -27,32 +68,64 @@
                 "ms-python.black-formatter",
                 "ms-python.isort",
                 "ms-python.mypy-type-checker",
+                "ms-python.pylint",
+                "ms-toolsai.jupyter",
+                "charliermarsh.ruff",
                 "ms-vscode.vscode-yaml",
                 "redhat.vscode-yaml",
                 "ms-vscode.makefile-tools",
+                "ms-vscode.vscode-json",
+                "eamodio.gitlens",
                 "GitHub.copilot",
-                "GitHub.vscode-pull-request-github"
+                "GitHub.vscode-pull-request-github",
+                "ms-vscode-remote.remote-containers",
+                "ms-azuretools.vscode-docker",
+                "humao.rest-client",
+                "ms-kubernetes-tools.vscode-kubernetes-tools",
+                "formulahendry.auto-rename-tag",
+                "streetsidesoftware.code-spell-checker",
+                "ms-vscode.test-adapter-converter",
+                "littlefoxteam.vscode-python-test-adapter"
             ]
         }
     },
-    "postCreateCommand": "pip install -e .[dev] && pre-commit install",
+    "postCreateCommand": "bash .devcontainer/setup.sh",
     "remoteUser": "vscode",
     "mounts": [
-        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind",
+        "source=iot-edge-anomaly-cache,target=/home/vscode/.cache,type=volume",
+        "source=iot-edge-anomaly-pip,target=/home/vscode/.local,type=volume"
     ],
-    "forwardPorts": [8000, 9090, 3000],
+    "forwardPorts": [8000, 8080, 9090, 3000, 4317, 16686],
     "portsAttributes": {
         "8000": {
-            "label": "Application",
+            "label": "Application API",
+            "onAutoForward": "openPreview"
+        },
+        "8080": {
+            "label": "Health Check",
             "onAutoForward": "notify"
         },
         "9090": {
-            "label": "Prometheus",
-            "onAutoForward": "ignore"
+            "label": "Prometheus Metrics",
+            "onAutoForward": "silent"
         },
         "3000": {
-            "label": "Grafana",
-            "onAutoForward": "ignore"
+            "label": "Grafana Dashboard",
+            "onAutoForward": "silent"
+        },
+        "4317": {
+            "label": "OTLP Collector",
+            "onAutoForward": "silent"
+        },
+        "16686": {
+            "label": "Jaeger UI",
+            "onAutoForward": "silent"
         }
+    },
+    "containerEnv": {
+        "PYTHONPATH": "/workspace/src",
+        "TZ": "UTC",
+        "DOCKER_BUILDKIT": "1"
     }
 }
