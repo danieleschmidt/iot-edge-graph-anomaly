@@ -1,13 +1,17 @@
-# Testing Guide
+# Comprehensive Testing Framework Documentation
 
-This document provides comprehensive guidance on testing the IoT Edge Graph Anomaly Detection system.
+## Overview
+
+The IoT Edge Anomaly Detection system uses a comprehensive testing framework built on pytest with extensive fixtures, markers, and testing utilities to ensure code quality, performance, and reliability.
 
 ## Testing Philosophy
 
-Our testing strategy follows the **Test Pyramid** approach:
-- **Unit Tests (70%)**: Fast, isolated tests for individual components
-- **Integration Tests (20%)**: Tests for component interactions
+Our testing strategy follows the **Test Pyramid** approach with enhanced security and performance testing:
+- **Unit Tests (60%)**: Fast, isolated tests for individual components
+- **Integration Tests (25%)**: Tests for component interactions
 - **End-to-End Tests (10%)**: Full system workflow validation
+- **Security Tests (3%)**: Vulnerability and attack vector testing
+- **Performance Tests (2%)**: Latency, throughput, and resource usage testing
 
 ## Test Structure
 
