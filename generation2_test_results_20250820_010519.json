@@ -1,0 +1,205 @@
+{
+  "summary": {
+    "total_tests": 19,
+    "passed": 0,
+    "failed": 19,
+    "skipped": 0,
+    "success_rate": 0.0,
+    "total_duration": 0.048511505126953125,
+    "avg_test_duration": 0.0022546994058709395
+  },
+  "detailed_results": [
+    {
+      "test_name": "test_input_validation",
+      "status": "failed",
+      "message": "Test failed: Dependencies not available",
+      "duration": 4.291534423828125e-06,
+      "timestamp": "2025-08-20T01:05:19.446342",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 113, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 127, in test_input_validation\n    raise unittest.SkipTest(\"Dependencies not available\")\nunittest.case.SkipTest: Dependencies not available\n"
+      }
+    },
+    {
+      "test_name": "test_error_recovery",
+      "status": "failed",
+      "message": "Test failed: Dependencies not available",
+      "duration": 4.0531158447265625e-06,
+      "timestamp": "2025-08-20T01:05:19.446533",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 113, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 156, in test_error_recovery\n    raise unittest.SkipTest(\"Dependencies not available\")\nunittest.case.SkipTest: Dependencies not available\n"
+      }
+    },
+    {
+      "test_name": "test_model_wrapper_robustness",
+      "status": "failed",
+      "message": "Test failed: Dependencies not available",
+      "duration": 1.9073486328125e-06,
+      "timestamp": "2025-08-20T01:05:19.446663",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 113, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 183, in test_model_wrapper_robustness\n    raise unittest.SkipTest(\"Dependencies not available\")\nunittest.case.SkipTest: Dependencies not available\n"
+      }
+    },
+    {
+      "test_name": "test_validation_error_handling",
+      "status": "failed",
+      "message": "Test failed: No module named 'numpy'",
+      "duration": 0.014021158218383789,
+      "timestamp": "2025-08-20T01:05:19.461254",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 113, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 213, in test_validation_error_handling\n    from iot_edge_anomaly.robust_error_handling import ValidationError, ErrorCategory\n  File \"/root/repo/src/iot_edge_anomaly/robust_error_handling.py\", line 28, in <module>\n    import numpy as np\nModuleNotFoundError: No module named 'numpy'\n"
+      }
+    },
+    {
+      "test_name": "test_fallback_mechanisms",
+      "status": "failed",
+      "message": "Test failed: Dependencies not available",
+      "duration": 5.7220458984375e-06,
+      "timestamp": "2025-08-20T01:05:19.461513",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 113, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 228, in test_fallback_mechanisms\n    raise unittest.SkipTest(\"Dependencies not available\")\nunittest.case.SkipTest: Dependencies not available\n"
+      }
+    },
+    {
+      "test_name": "test_input_sanitization",
+      "status": "failed",
+      "message": "Test failed: Dependencies not available",
+      "duration": 2.86102294921875e-06,
+      "timestamp": "2025-08-20T01:05:19.461681",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 275, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 289, in test_input_sanitization\n    raise unittest.SkipTest(\"Dependencies not available\")\nunittest.case.SkipTest: Dependencies not available\n"
+      }
+    },
+    {
+      "test_name": "test_adversarial_detection",
+      "status": "failed",
+      "message": "Test failed: Dependencies not available",
+      "duration": 2.384185791015625e-06,
+      "timestamp": "2025-08-20T01:05:19.461807",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 275, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 310, in test_adversarial_detection\n    raise unittest.SkipTest(\"Dependencies not available\")\nunittest.case.SkipTest: Dependencies not available\n"
+      }
+    },
+    {
+      "test_name": "test_secure_model_wrapper",
+      "status": "failed",
+      "message": "Test failed: Dependencies not available",
+      "duration": 2.6226043701171875e-06,
+      "timestamp": "2025-08-20T01:05:19.461925",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 275, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 337, in test_secure_model_wrapper\n    raise unittest.SkipTest(\"Dependencies not available\")\nunittest.case.SkipTest: Dependencies not available\n"
+      }
+    },
+    {
+      "test_name": "test_authentication_manager",
+      "status": "failed",
+      "message": "Test failed: No module named 'numpy'",
+      "duration": 0.013951778411865234,
+      "timestamp": "2025-08-20T01:05:19.476432",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 275, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 369, in test_authentication_manager\n    from iot_edge_anomaly.security_framework import AuthenticationManager\n  File \"/root/repo/src/iot_edge_anomaly/security_framework.py\", line 35, in <module>\n    import numpy as np\nModuleNotFoundError: No module named 'numpy'\n"
+      }
+    },
+    {
+      "test_name": "test_security_utilities",
+      "status": "failed",
+      "message": "Test failed: No module named 'numpy'",
+      "duration": 0.0005443096160888672,
+      "timestamp": "2025-08-20T01:05:19.477338",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 275, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 398, in test_security_utilities\n    from iot_edge_anomaly.security_framework import secure_hash, verify_integrity, encrypt_data, decrypt_data\n  File \"/root/repo/src/iot_edge_anomaly/security_framework.py\", line 35, in <module>\n    import numpy as np\nModuleNotFoundError: No module named 'numpy'\n"
+      }
+    },
+    {
+      "test_name": "test_metrics_collection",
+      "status": "failed",
+      "message": "Test failed: No module named 'numpy'",
+      "duration": 0.011568784713745117,
+      "timestamp": "2025-08-20T01:05:19.489493",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 441, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 454, in test_metrics_collection\n    from iot_edge_anomaly.advanced_monitoring import MetricsCollector\n  File \"/root/repo/src/iot_edge_anomaly/advanced_monitoring.py\", line 33, in <module>\n    import numpy as np\nModuleNotFoundError: No module named 'numpy'\n"
+      }
+    },
+    {
+      "test_name": "test_health_checking",
+      "status": "failed",
+      "message": "Test failed: No module named 'numpy'",
+      "duration": 0.0006256103515625,
+      "timestamp": "2025-08-20T01:05:19.490448",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 441, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 483, in test_health_checking\n    from iot_edge_anomaly.advanced_monitoring import HealthChecker, MetricsCollector\n  File \"/root/repo/src/iot_edge_anomaly/advanced_monitoring.py\", line 33, in <module>\n    import numpy as np\nModuleNotFoundError: No module named 'numpy'\n"
+      }
+    },
+    {
+      "test_name": "test_alert_management",
+      "status": "failed",
+      "message": "Test failed: No module named 'numpy'",
+      "duration": 0.0005030632019042969,
+      "timestamp": "2025-08-20T01:05:19.491239",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 441, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 508, in test_alert_management\n    from iot_edge_anomaly.advanced_monitoring import AlertManager, MetricsCollector\n  File \"/root/repo/src/iot_edge_anomaly/advanced_monitoring.py\", line 33, in <module>\n    import numpy as np\nModuleNotFoundError: No module named 'numpy'\n"
+      }
+    },
+    {
+      "test_name": "test_structured_logging",
+      "status": "failed",
+      "message": "Test failed: No module named 'numpy'",
+      "duration": 0.0005505084991455078,
+      "timestamp": "2025-08-20T01:05:19.492023",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 441, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 540, in test_structured_logging\n    from iot_edge_anomaly.advanced_monitoring import StructuredLogger, LogLevel\n  File \"/root/repo/src/iot_edge_anomaly/advanced_monitoring.py\", line 33, in <module>\n    import numpy as np\nModuleNotFoundError: No module named 'numpy'\n"
+      }
+    },
+    {
+      "test_name": "test_performance_monitoring",
+      "status": "failed",
+      "message": "Test failed: No module named 'numpy'",
+      "duration": 0.0005168914794921875,
+      "timestamp": "2025-08-20T01:05:19.492768",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 441, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 558, in test_performance_monitoring\n    from iot_edge_anomaly.advanced_monitoring import monitor_performance, MetricsCollector\n  File \"/root/repo/src/iot_edge_anomaly/advanced_monitoring.py\", line 33, in <module>\n    import numpy as np\nModuleNotFoundError: No module named 'numpy'\n"
+      }
+    },
+    {
+      "test_name": "test_unified_api_with_robustness",
+      "status": "failed",
+      "message": "Test failed: Dependencies not available",
+      "duration": 5.0067901611328125e-06,
+      "timestamp": "2025-08-20T01:05:19.492967",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 605, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 619, in test_unified_api_with_robustness\n    raise unittest.SkipTest(\"Dependencies not available\")\nunittest.case.SkipTest: Dependencies not available\n"
+      }
+    },
+    {
+      "test_name": "test_security_integration",
+      "status": "failed",
+      "message": "Test failed: Dependencies not available",
+      "duration": 2.6226043701171875e-06,
+      "timestamp": "2025-08-20T01:05:19.493094",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 605, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 653, in test_security_integration\n    raise unittest.SkipTest(\"Dependencies not available\")\nunittest.case.SkipTest: Dependencies not available\n"
+      }
+    },
+    {
+      "test_name": "test_monitoring_integration",
+      "status": "failed",
+      "message": "Test failed: No module named 'numpy'",
+      "duration": 0.0005209445953369141,
+      "timestamp": "2025-08-20T01:05:19.493815",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 605, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 679, in test_monitoring_integration\n    from iot_edge_anomaly.advanced_monitoring import MetricsCollector, HealthChecker, AlertManager\n  File \"/root/repo/src/iot_edge_anomaly/advanced_monitoring.py\", line 33, in <module>\n    import numpy as np\nModuleNotFoundError: No module named 'numpy'\n"
+      }
+    },
+    {
+      "test_name": "test_end_to_end_robustness",
+      "status": "failed",
+      "message": "Test failed: Dependencies not available",
+      "duration": 4.76837158203125e-06,
+      "timestamp": "2025-08-20T01:05:19.493989",
+      "details": {
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/test_generation2_comprehensive.py\", line 605, in run_all_tests\n    test()\n  File \"/root/repo/test_generation2_comprehensive.py\", line 704, in test_end_to_end_robustness\n    raise unittest.SkipTest(\"Dependencies not available\")\nunittest.case.SkipTest: Dependencies not available\n"
+      }
+    }
+  ],
+  "timestamp": "20250820_010519",
+  "dependencies_available": false
+}
