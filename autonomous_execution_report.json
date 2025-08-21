@@ -1,0 +1,224 @@
+{
+  "start_time": "2025-08-21T19:32:25.961874",
+  "generations": {
+    "generation_1": {
+      "execution_results": [
+        {
+          "sensor_data": [
+            16.72364251794519,
+            48.53839490996338,
+            0.9698334547372042,
+            0.519106921305442,
+            89.06226582957117
+          ],
+          "reconstruction_error": 0.23622462428246233,
+          "is_anomaly": false,
+          "anomaly_level": "normal",
+          "uncertainty": 0.11811231214123116,
+          "inference_time_ms": 0.015735626220703125,
+          "timestamp": "2025-08-21T19:32:25.963464",
+          "status": "success"
+        },
+        {
+          "sensor_data": [
+            21.05861786552267,
+            55.43206400743227,
+            1.0171725021600566,
+            0.5976444174412701,
+            85.8651564200971
+          ],
+          "reconstruction_error": 0.23291118309239436,
+          "is_anomaly": false,
+          "anomaly_level": "normal",
+          "uncertainty": 0.11645559154619718,
+          "inference_time_ms": 0.0209808349609375,
+          "timestamp": "2025-08-21T19:32:30.964169",
+          "status": "success"
+        },
+        {
+          "sensor_data": [
+            17.960221513570517,
+            42.25323584520365,
+            0.9078495146842486,
+            0.46371217790104524,
+            99.14569789525117
+          ],
+          "reconstruction_error": 0.2802233940370308,
+          "is_anomaly": false,
+          "anomaly_level": "normal",
+          "uncertainty": 0.1401116970185154,
+          "inference_time_ms": 0.01621246337890625,
+          "timestamp": "2025-08-21T19:32:35.964648",
+          "status": "success"
+        },
+        {
+          "sensor_data": [
+            19.449698853338614,
+            51.725689103749886,
+            0.871705992514424,
+            0.5371188467868445,
+            93.75116258408308
+          ],
+          "reconstruction_error": 0.22915786373720448,
+          "is_anomaly": false,
+          "anomaly_level": "normal",
+          "uncertainty": 0.11457893186860224,
+          "inference_time_ms": 0.02193450927734375,
+          "timestamp": "2025-08-21T19:32:40.965383",
+          "status": "success"
+        },
+        {
+          "sensor_data": [
+            16.927197180233158,
+            48.32050227019977,
+            0.9591893247497265,
+            0.5151051302212051,
+            93.31877896182421
+          ],
+          "reconstruction_error": 0.19981543626739687,
+          "is_anomaly": false,
+          "anomaly_level": "normal",
+          "uncertainty": 0.09990771813369843,
+          "inference_time_ms": 0.018835067749023438,
+          "timestamp": "2025-08-21T19:32:45.965976",
+          "status": "success"
+        },
+        {
+          "sensor_data": [
+            22.42014709560764,
+            44.6698489256095,
+            1.1292985843907097,
+            0.5037906004620644,
+            96.70026610675191
+          ],
+          "reconstruction_error": 0.22246616601147934,
+          "is_anomaly": false,
+          "anomaly_level": "normal",
+          "uncertainty": 0.11123308300573967,
+          "inference_time_ms": 0.015735626220703125,
+          "timestamp": "2025-08-21T19:32:50.966517",
+          "status": "success"
+        },
+        {
+          "sensor_data": [
+            19.854750783630266,
+            42.769411316814605,
+            1.0139264595993798,
+            0.5161599543440835,
+            117.01275777275623
+          ],
+          "reconstruction_error": 0.28882585797525745,
+          "is_anomaly": false,
+          "anomaly_level": "normal",
+          "uncertainty": 0.14441292898762872,
+          "inference_time_ms": 0.0152587890625,
+          "timestamp": "2025-08-21T19:32:55.967279",
+          "status": "success"
+        },
+        {
+          "sensor_data": [
+            19.212916714951955,
+            56.17000987021785,
+            1.0363225130299862,
+            0.49919571536618473,
+            96.52772408562129
+          ],
+          "reconstruction_error": 0.30850482490395326,
+          "is_anomaly": true,
+          "anomaly_level": "low_anomaly",
+          "uncertainty": 0.15425241245197663,
+          "inference_time_ms": 0.0209808349609375,
+          "timestamp": "2025-08-21T19:33:00.968158",
+          "status": "success"
+        },
+        {
+          "sensor_data": [
+            19.505544645343743,
+            48.65065224174478,
+            1.1354968114873711,
+            0.5310573124362209,
+            81.73965889498251
+          ],
+          "reconstruction_error": 0.22673262566257887,
+          "is_anomaly": false,
+          "anomaly_level": "normal",
+          "uncertainty": 0.11336631283128944,
+          "inference_time_ms": 0.014543533325195312,
+          "timestamp": "2025-08-21T19:33:05.968669",
+          "status": "success"
+        },
+        {
+          "sensor_data": [
+            23.98480680015609,
+            46.854639297041714,
+            1.026958122791533,
+            0.41759860070399013,
+            107.24057076434303
+          ],
+          "reconstruction_error": 0.2285837932805455,
+          "is_anomaly": false,
+          "anomaly_level": "normal",
+          "uncertainty": 0.11429189664027276,
+          "inference_time_ms": 0.015020370483398438,
+          "timestamp": "2025-08-21T19:33:10.969237",
+          "status": "success"
+        }
+      ],
+      "performance_summary": {
+        "runtime_seconds": 50.00753951072693,
+        "total_inferences": 10,
+        "avg_inference_time_ms": 0.017523765563964844,
+        "avg_reconstruction_error": 0.24534457692503034,
+        "anomaly_detection_rate": 0.1,
+        "throughput_samples_per_sec": 0.19996984650394442,
+        "performance_status": "excellent"
+      },
+      "configuration": {
+        "model": {
+          "input_size": 5,
+          "hidden_size": 64,
+          "num_layers": 2,
+          "dropout": 0.1,
+          "sequence_length": 20
+        },
+        "processing": {
+          "loop_interval": 5.0,
+          "max_iterations": 10,
+          "batch_size": 32,
+          "enable_async_processing": false
+        },
+        "monitoring": {
+          "enable_metrics": true,
+          "export_interval": 60
+        },
+        "health": {
+          "memory_threshold_mb": 100,
+          "cpu_threshold_percent": 80
+        },
+        "advanced_models": {
+          "enable_all_models": true,
+          "enable_transformer_vae": true,
+          "enable_sparse_gat": true,
+          "enable_physics_informed": true,
+          "enable_self_supervised": true,
+          "ensemble_method": "dynamic_weighting",
+          "uncertainty_quantification": true
+        },
+        "security": {
+          "enable_differential_privacy": true,
+          "privacy_epsilon": 1.0
+        },
+        "research": {
+          "enable_benchmarking": true,
+          "enable_comparative_studies": true,
+          "enable_statistical_validation": true
+        }
+      },
+      "status": "completed_successfully"
+    }
+  },
+  "quality_gates": {},
+  "total_runtime": 50.00874185562134,
+  "status": "FAILED",
+  "error": "'validation'"
+}
