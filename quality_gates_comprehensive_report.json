@@ -1,7 +1,7 @@
 {
-  "timestamp": "2025-08-14T23:39:49.422168",
+  "timestamp": "2025-08-22T21:57:43.520294",
   "overall_status": "FAILED",
-  "overall_score": 91.42857142857143,
+  "overall_score": 90.7983193277311,
   "summary": {
     "total_gates": 17,
     "passed": 15,
@@ -9,27 +9,27 @@
     "warnings": 0,
     "success_rate": 88.23529411764706
   },
-  "execution_time": 13.50821042060852,
+  "execution_time": 0.3713877201080322,
   "results": [
     {
       "name": "Code Execution",
       "status": "FAILED",
       "score": null,
       "threshold": null,
-      "message": "Import failed: Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nModuleNotFoundError: No module named 'iot_edge_anomaly'\n",
-      "execution_time": 0.039337873458862305,
+      "message": "Import failed: Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/root/repo/src/iot_edge_anomaly/models/__init__.py\", line 4, in <module>\n    from .lstm_autoencoder import LSTMAutoencoder\n  File \"/root/repo/src/iot_edge_anomaly/models/lstm_autoencoder.py\", line 10, in <module>\n    import torch.nn as nn\nModuleNotFoundError: No module named 'torch.nn'; 'torch' is not a package\n",
+      "execution_time": 0.04905200004577637,
       "details": {}
     },
     {
       "name": "Test Coverage",
       "status": "FAILED",
-      "score": 70.0,
+      "score": 61.17647058823529,
       "threshold": 85.0,
-      "message": "Estimated coverage: 70.0% (17 test files, 34 source files)",
-      "execution_time": 0.009172677993774414,
+      "message": "Estimated coverage: 61.2% (21 test files, 51 source files)",
+      "execution_time": 0.004142284393310547,
       "details": {
-        "test_files": 17,
-        "source_files": 34,
+        "test_files": 21,
+        "source_files": 51,
         "comprehensive_tests_found": [
           "test_main_app.py",
           "test_lstm_autoencoder.py",
@@ -44,7 +44,7 @@
       "score": 10.0,
       "threshold": 8.0,
       "message": "Code quality score: 10.0/10.0",
-      "execution_time": 0.0004162788391113281,
+      "execution_time": 0.00020766258239746094,
       "details": {
         "module_structure": "\u2705 Proper src/ structure",
         "configuration": "\u2705 Config files: ['pyproject.toml', 'setup.py', 'requirements.txt']",
@@ -57,10 +57,10 @@
       "status": "PASSED",
       "score": null,
       "threshold": null,
-      "message": "All key modules present (40 total modules)",
-      "execution_time": 0.0018625259399414062,
+      "message": "All key modules present (59 total modules)",
+      "execution_time": 0.0011703968048095703,
       "details": {
-        "total_modules": 40
+        "total_modules": 59
       }
     },
     {
@@ -69,11 +69,11 @@
       "score": 75,
       "threshold": 75.0,
       "message": "Reproducibility features: 3/4",
-      "execution_time": 0.010977506637573242,
+      "execution_time": 0.009647130966186523,
       "details": {
         "features": [
           "Configuration management system",
-          "Research framework (1 files)",
+          "Research framework (2 files)",
           "Benchmarking system"
         ]
       }
@@ -83,12 +83,14 @@
       "status": "PASSED",
       "score": 100.0,
       "threshold": 60.0,
-      "message": "Statistical evidence found: 4 sources",
-      "execution_time": 0.11422014236450195,
+      "message": "Statistical evidence found: 6 sources",
+      "execution_time": 0.0848381519317627,
       "details": {
         "evidence": [
           "Statistical analysis in causal_discovery_network.py",
+          "Statistical analysis in comprehensive_validator.py",
           "Statistical analysis in model_validator.py",
+          "Statistical validation in advanced_benchmarking_suite.py",
           "Statistical validation in comparative_analysis.py",
           "Performance metrics documented"
         ]
@@ -99,14 +101,15 @@
       "status": "PASSED",
       "score": 100.0,
       "threshold": 50.0,
-      "message": "Baseline comparison evidence: 6 sources",
-      "execution_time": 0.006501674652099609,
+      "message": "Baseline comparison evidence: 7 sources",
+      "execution_time": 0.01351308822631836,
       "details": {
         "evidence": [
           "Comparative analysis framework",
           "Benchmarking system",
           "Performance benchmarks documented",
           "Baseline comparisons in gnn_layer.py",
+          "Baseline comparisons in performance_profiler.py",
           "Baseline comparisons in fault_tolerance.py",
           "Baseline comparisons in model_validator.py"
         ]
@@ -118,7 +121,7 @@
       "score": 100,
       "threshold": 60.0,
       "message": "Methodology documentation score: 100/100",
-      "execution_time": 0.0037255287170410156,
+      "execution_time": 0.0032269954681396484,
       "details": {
         "evidence": [
           "'algorithm' documented in README",
@@ -138,7 +141,7 @@
       "score": 100,
       "threshold": 90.0,
       "message": "Security score: 100/100",
-      "execution_time": 0.0011260509490966797,
+      "execution_time": 0.0012140274047851562,
       "details": {
         "evidence": [
           "Security package: safety",
@@ -152,23 +155,34 @@
       "status": "PASSED",
       "score": 100,
       "threshold": 60.0,
-      "message": "Security patterns found: 14",
-      "execution_time": 0.019792795181274414,
+      "message": "Security patterns found: 25",
+      "execution_time": 0.033924102783203125,
       "details": {
         "patterns": [
           "Security pattern in advanced_main.py",
           "Security pattern in circuit_breaker.py",
+          "Security pattern in concurrent_processor.py",
           "Security pattern in config_validator.py",
+          "Security pattern in federated_server.py",
           "Security pattern in main.py",
+          "Security pattern in robust_error_handling.py",
+          "Security pattern in robust_main.py",
+          "Security pattern in security_framework.py",
           "Security pattern in validation_utils.py",
+          "Security pattern in gdpr_framework.py",
           "Security pattern in swat_loader.py",
+          "Security pattern in internationalization.py",
           "Security pattern in lstm_autoencoder.py",
           "Security pattern in physics_informed_hybrid.py",
-          "Security pattern in fault_tolerance.py",
           "Security pattern in advanced_fault_tolerance.py",
-          "Security pattern in secure_inference.py",
-          "Security pattern in advanced_security.py",
+          "Security pattern in fault_tolerance.py",
           "Security pattern in __init__.py",
+          "Security pattern in circuit_breaker.py",
+          "Security pattern in data_validator.py",
+          "Security pattern in advanced_security.py",
+          "Security pattern in secure_inference.py",
+          "Security pattern in __init__.py",
+          "Security pattern in comprehensive_validator.py",
           "Security pattern in model_validator.py"
         ]
       }
@@ -179,7 +193,7 @@
       "score": null,
       "threshold": null,
       "message": "No exposed secrets detected",
-      "execution_time": 13.274855375289917,
+      "execution_time": 0.1342015266418457,
       "details": {}
     },
     {
@@ -188,13 +202,13 @@
       "score": 100,
       "threshold": 75.0,
       "message": "Performance evidence: 4 sources",
-      "execution_time": 0.0019559860229492188,
+      "execution_time": 0.0020122528076171875,
       "details": {
         "evidence": [
           "Benchmark script",
           "Performance tests (1 files)",
           "Performance metrics documented",
-          "Optimization modules (2 files)"
+          "Optimization modules (4 files)"
         ]
       }
     },
@@ -203,18 +217,28 @@
       "status": "PASSED",
       "score": 100,
       "threshold": 50.0,
-      "message": "Memory optimizations found: 29",
-      "execution_time": 0.004458427429199219,
+      "message": "Memory optimizations found: 45",
+      "execution_time": 0.0069692134857177734,
       "details": {
         "optimizations": [
           "Memory optimization in __init__.py",
           "Memory optimization in advanced_main.py",
+          "Memory optimization in advanced_monitoring.py",
           "Memory optimization in async_processor.py",
+          "Memory optimization in autoscaling_system.py",
+          "Memory optimization in concurrent_processor.py",
           "Memory optimization in config_validator.py",
+          "Memory optimization in federated_server.py",
           "Memory optimization in health.py",
           "Memory optimization in main.py",
+          "Memory optimization in optimized_main.py",
+          "Memory optimization in performance_engine.py",
           "Memory optimization in performance_optimizer.py",
+          "Memory optimization in robust_error_handling.py",
+          "Memory optimization in robust_main.py",
+          "Memory optimization in security_framework.py",
           "Memory optimization in validation_utils.py",
+          "Memory optimization in internationalization.py",
           "Memory optimization in advanced_hybrid_integration.py",
           "Memory optimization in causal_discovery_network.py",
           "Memory optimization in continual_learning_network.py",
@@ -228,14 +252,20 @@
           "Memory optimization in transformer_vae.py",
           "Memory optimization in advanced_metrics.py",
           "Memory optimization in metrics_exporter.py",
-          "Memory optimization in performance_optimizer.py",
+          "Memory optimization in __init__.py",
           "Memory optimization in advanced_performance_optimization.py",
-          "Memory optimization in fault_tolerance.py",
+          "Memory optimization in performance_optimizer.py",
           "Memory optimization in advanced_fault_tolerance.py",
-          "Memory optimization in secure_inference.py",
+          "Memory optimization in fault_tolerance.py",
+          "Memory optimization in circuit_breaker.py",
+          "Memory optimization in data_validator.py",
+          "Memory optimization in health_monitor.py",
+          "Memory optimization in auto_scaling_system.py",
+          "Memory optimization in intelligent_caching.py",
           "Memory optimization in advanced_security.py",
-          "Memory optimization in model_validator.py",
-          "Memory optimization in auto_scaling_system.py"
+          "Memory optimization in secure_inference.py",
+          "Memory optimization in comprehensive_validator.py",
+          "Memory optimization in model_validator.py"
         ]
       }
     },
@@ -244,25 +274,33 @@
       "status": "PASSED",
       "score": 100,
       "threshold": 60.0,
-      "message": "Speed optimizations found: 15",
-      "execution_time": 0.010803937911987305,
+      "message": "Speed optimizations found: 23",
+      "execution_time": 0.020446300506591797,
       "details": {
         "optimizations": [
           "Speed optimization in advanced_main.py",
           "Speed optimization in async_processor.py",
+          "Speed optimization in autoscaling_system.py",
+          "Speed optimization in concurrent_processor.py",
+          "Speed optimization in federated_server.py",
           "Speed optimization in main.py",
+          "Speed optimization in optimized_main.py",
+          "Speed optimization in performance_engine.py",
           "Speed optimization in performance_optimizer.py",
+          "Speed optimization in robust_main.py",
+          "Speed optimization in security_framework.py",
           "Speed optimization in multimodal_fusion_network.py",
           "Speed optimization in neuromorphic_spiking.py",
           "Speed optimization in sparse_graph_attention.py",
           "Speed optimization in transformer_vae.py",
           "Speed optimization in advanced_metrics.py",
-          "Speed optimization in performance_optimizer.py",
+          "Speed optimization in __init__.py",
           "Speed optimization in advanced_performance_optimization.py",
-          "Speed optimization in fault_tolerance.py",
+          "Speed optimization in performance_optimizer.py",
           "Speed optimization in advanced_fault_tolerance.py",
-          "Speed optimization in model_validator.py",
-          "Speed optimization in auto_scaling_system.py"
+          "Speed optimization in fault_tolerance.py",
+          "Speed optimization in auto_scaling_system.py",
+          "Speed optimization in model_validator.py"
         ]
       }
     },
@@ -272,7 +310,7 @@
       "score": 100,
       "threshold": 80.0,
       "message": "Documentation score: 100.0/100",
-      "execution_time": 0.0024590492248535156,
+      "execution_time": 0.0045201778411865234,
       "details": {
         "documentation": [
           "\u2705 README.md",
@@ -289,12 +327,12 @@
       "score": 125,
       "threshold": 75.0,
       "message": "API documentation score: 125/100",
-      "execution_time": 0.00022673606872558594,
+      "execution_time": 0.0003306865692138672,
       "details": {
         "documentation": [
           "\u2705 Main API: src/iot_edge_anomaly/main.py",
           "\u2705 Main API: src/iot_edge_anomaly/advanced_main.py",
-          "\u2705 Usage examples (1 files)",
+          "\u2705 Usage examples (2 files)",
           "\u2705 API usage in README",
           "\u2705 Configuration examples"
         ]
@@ -306,7 +344,7 @@
       "score": 100,
       "threshold": 60.0,
       "message": "Research documentation score: 100/100",
-      "execution_time": 0.00043272972106933594,
+      "execution_time": 0.0006470680236816406,
       "details": {
         "documentation": [
           "Research keyword: algorithm",
