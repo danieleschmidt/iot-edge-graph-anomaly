@@ -3,84 +3,90 @@
     "tests": [
       {
         "name": "Basic Imports",
-        "status": "PASSED",
-        "duration": 3.9987590312957764,
-        "error": null
+        "status": "FAILED",
+        "duration": 0.19710278511047363,
+        "error": "No module named 'torch.nn'; 'torch' is not a package",
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/run_comprehensive_tests.py\", line 39, in run_test\n    test_func()\n  File \"/root/repo/run_comprehensive_tests.py\", line 73, in test_basic_imports\n    from iot_edge_anomaly.models.lstm_autoencoder import LSTMAutoencoder\n  File \"/root/repo/src/iot_edge_anomaly/models/__init__.py\", line 4, in <module>\n    from .lstm_autoencoder import LSTMAutoencoder\n  File \"/root/repo/src/iot_edge_anomaly/models/lstm_autoencoder.py\", line 10, in <module>\n    import torch.nn as nn\nModuleNotFoundError: No module named 'torch.nn'; 'torch' is not a package\n"
       },
       {
         "name": "Model Creation and Inference",
-        "status": "PASSED",
-        "duration": 0.012452363967895508,
-        "error": null
+        "status": "FAILED",
+        "duration": 0.0006289482116699219,
+        "error": "No module named 'torch.nn'; 'torch' is not a package",
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/run_comprehensive_tests.py\", line 39, in run_test\n    test_func()\n  File \"/root/repo/run_comprehensive_tests.py\", line 81, in test_model_creation_and_inference\n    from iot_edge_anomaly.models.lstm_autoencoder import LSTMAutoencoder\n  File \"/root/repo/src/iot_edge_anomaly/models/__init__.py\", line 4, in <module>\n    from .lstm_autoencoder import LSTMAutoencoder\n  File \"/root/repo/src/iot_edge_anomaly/models/lstm_autoencoder.py\", line 10, in <module>\n    import torch.nn as nn\nModuleNotFoundError: No module named 'torch.nn'; 'torch' is not a package\n"
       },
       {
         "name": "Configuration Loading",
-        "status": "PASSED",
-        "duration": 0.02503037452697754,
-        "error": null
+        "status": "FAILED",
+        "duration": 0.021070003509521484,
+        "error": "'str' object has no attribute 'get'",
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/run_comprehensive_tests.py\", line 39, in run_test\n    test_func()\n  File \"/root/repo/run_comprehensive_tests.py\", line 142, in test_configuration_loading\n    issues = validate_config(config)\n             ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/repo/src/iot_edge_anomaly/config_validator.py\", line 259, in validate_config\n    issues = validator.validate(config)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/repo/src/iot_edge_anomaly/config_validator.py\", line 55, in validate\n    self._validate_model_config(config.get('model', {}))\n  File \"/root/repo/src/iot_edge_anomaly/config_validator.py\", line 71, in _validate_model_config\n    input_size = model_config.get('input_size')\n                 ^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'get'\n"
       },
       {
         "name": "Existing Pytest Suite",
         "status": "FAILED",
-        "duration": 9.04915452003479,
-        "error": "Pytest failed with exit code 2",
-        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/run_comprehensive_tests.py\", line 39, in run_test\n    test_func()\n  File \"/root/repo/run_comprehensive_tests.py\", line 297, in run_pytest_tests\n    raise Exception(f\"Pytest failed with exit code {result.returncode}\")\nException: Pytest failed with exit code 2\n"
+        "duration": 0.0013003349304199219,
+        "error": "[Errno 2] No such file or directory: 'python'",
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/run_comprehensive_tests.py\", line 39, in run_test\n    test_func()\n  File \"/root/repo/run_comprehensive_tests.py\", line 282, in run_pytest_tests\n    result = subprocess.run(\n             ^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/subprocess.py\", line 548, in run\n    with Popen(*popenargs, **kwargs) as process:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/subprocess.py\", line 1026, in __init__\n    self._execute_child(args, executable, preexec_fn, close_fds,\n  File \"/usr/lib/python3.12/subprocess.py\", line 1955, in _execute_child\n    raise child_exception_type(errno_num, err_msg, err_filename)\nFileNotFoundError: [Errno 2] No such file or directory: 'python'\n"
       }
     ],
-    "passed": 3,
-    "failed": 1,
-    "status": "MOSTLY_PASSED"
+    "passed": 0,
+    "failed": 4,
+    "status": "FAILED"
   },
   "generation_2": {
     "tests": [
       {
         "name": "Security Framework",
         "status": "FAILED",
-        "duration": 0.0011043548583984375,
-        "error": "No module named 'cryptography'",
-        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/run_comprehensive_tests.py\", line 39, in run_test\n    test_func()\n  File \"/root/repo/run_comprehensive_tests.py\", line 153, in test_security_features\n    from iot_edge_anomaly.security.secure_inference import SecureInferenceEngine, SecurityLevel\n  File \"/root/repo/src/iot_edge_anomaly/security/secure_inference.py\", line 26, in <module>\n    from cryptography.fernet import Fernet\nModuleNotFoundError: No module named 'cryptography'\n"
+        "duration": 0.08918976783752441,
+        "error": "No module named 'torch.nn'; 'torch' is not a package",
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/run_comprehensive_tests.py\", line 39, in run_test\n    test_func()\n  File \"/root/repo/run_comprehensive_tests.py\", line 154, in test_security_features\n    from iot_edge_anomaly.models.lstm_autoencoder import LSTMAutoencoder\n  File \"/root/repo/src/iot_edge_anomaly/models/__init__.py\", line 4, in <module>\n    from .lstm_autoencoder import LSTMAutoencoder\n  File \"/root/repo/src/iot_edge_anomaly/models/lstm_autoencoder.py\", line 10, in <module>\n    import torch.nn as nn\nModuleNotFoundError: No module named 'torch.nn'; 'torch' is not a package\n"
       },
       {
         "name": "Advanced Metrics Collection",
-        "status": "PASSED",
-        "duration": 0.1294553279876709,
-        "error": null
+        "status": "FAILED",
+        "duration": 0.0916435718536377,
+        "error": "cannot import name 'metrics' from 'opentelemetry' (unknown location)",
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/run_comprehensive_tests.py\", line 39, in run_test\n    test_func()\n  File \"/root/repo/run_comprehensive_tests.py\", line 182, in test_metrics_collection\n    from iot_edge_anomaly.monitoring.advanced_metrics import AdvancedMetricsCollector\n  File \"/root/repo/src/iot_edge_anomaly/monitoring/__init__.py\", line 4, in <module>\n    from .metrics_exporter import MetricsExporter\n  File \"/root/repo/src/iot_edge_anomaly/monitoring/metrics_exporter.py\", line 12, in <module>\n    from opentelemetry import metrics\nImportError: cannot import name 'metrics' from 'opentelemetry' (unknown location)\n"
       },
       {
         "name": "Model Validation Framework",
         "status": "FAILED",
-        "duration": 1.1364402770996094,
-        "error": "Should have validation results",
-        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/run_comprehensive_tests.py\", line 39, in run_test\n    test_func()\n  File \"/root/repo/run_comprehensive_tests.py\", line 231, in test_model_validation\n    assert len(validation_results) > 0, \"Should have validation results\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Should have validation results\n"
+        "duration": 2.126215696334839,
+        "error": "No module named 'torch.nn'; 'torch' is not a package",
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/run_comprehensive_tests.py\", line 39, in run_test\n    test_func()\n  File \"/root/repo/run_comprehensive_tests.py\", line 216, in test_model_validation\n    from iot_edge_anomaly.models.lstm_autoencoder import LSTMAutoencoder\n  File \"/root/repo/src/iot_edge_anomaly/models/__init__.py\", line 4, in <module>\n    from .lstm_autoencoder import LSTMAutoencoder\n  File \"/root/repo/src/iot_edge_anomaly/models/lstm_autoencoder.py\", line 10, in <module>\n    import torch.nn as nn\nModuleNotFoundError: No module named 'torch.nn'; 'torch' is not a package\n"
       }
     ],
-    "passed": 1,
-    "failed": 2,
+    "passed": 0,
+    "failed": 3,
     "status": "FAILED"
   },
   "generation_3": {
     "tests": [
       {
         "name": "Performance Optimization",
-        "status": "PASSED",
-        "duration": 2.28200626373291,
-        "error": null
+        "status": "FAILED",
+        "duration": 0.00043773651123046875,
+        "error": "No module named 'torch.nn'; 'torch' is not a package",
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/run_comprehensive_tests.py\", line 39, in run_test\n    test_func()\n  File \"/root/repo/run_comprehensive_tests.py\", line 104, in test_performance_optimization\n    from iot_edge_anomaly.models.lstm_autoencoder import LSTMAutoencoder\n  File \"/root/repo/src/iot_edge_anomaly/models/__init__.py\", line 4, in <module>\n    from .lstm_autoencoder import LSTMAutoencoder\n  File \"/root/repo/src/iot_edge_anomaly/models/lstm_autoencoder.py\", line 10, in <module>\n    import torch.nn as nn\nModuleNotFoundError: No module named 'torch.nn'; 'torch' is not a package\n"
       },
       {
         "name": "Advanced Ensemble System",
-        "status": "PASSED",
-        "duration": 0.0071086883544921875,
-        "error": null
+        "status": "FAILED",
+        "duration": 0.00039505958557128906,
+        "error": "No module named 'torch.nn'; 'torch' is not a package",
+        "traceback": "Traceback (most recent call last):\n  File \"/root/repo/run_comprehensive_tests.py\", line 39, in run_test\n    test_func()\n  File \"/root/repo/run_comprehensive_tests.py\", line 241, in test_ensemble_system\n    from iot_edge_anomaly.models.lstm_autoencoder import LSTMAutoencoder\n  File \"/root/repo/src/iot_edge_anomaly/models/__init__.py\", line 4, in <module>\n    from .lstm_autoencoder import LSTMAutoencoder\n  File \"/root/repo/src/iot_edge_anomaly/models/lstm_autoencoder.py\", line 10, in <module>\n    import torch.nn as nn\nModuleNotFoundError: No module named 'torch.nn'; 'torch' is not a package\n"
       }
     ],
-    "passed": 2,
-    "failed": 0,
-    "status": "PASSED"
+    "passed": 0,
+    "failed": 2,
+    "status": "FAILED"
   },
   "overall": {
     "total_tests": 9,
-    "total_passed": 6,
-    "total_failed": 3,
-    "status": "MOSTLY_PASSED"
+    "total_passed": 0,
+    "total_failed": 9,
+    "status": "FAILED"
   }
 }
