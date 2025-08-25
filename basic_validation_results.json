@@ -1,0 +1,81 @@
+{
+  "timestamp": "2025-08-25T02:45:05.103054+00:00",
+  "validation_type": "basic_validation",
+  "total_tests": 12,
+  "passed_tests": 7,
+  "pass_rate": 0.5833333333333334,
+  "test_results": [
+    {
+      "name": "File Structure",
+      "status": "FAILED",
+      "duration": 0.00015211105346679688,
+      "error": "AssertionError: File too small: src/iot_edge_anomaly/__init__.py"
+    },
+    {
+      "name": "Autonomous Enhancement Import",
+      "status": "PASSED",
+      "duration": 0.005352020263671875,
+      "error": null
+    },
+    {
+      "name": "Global Deployment Import",
+      "status": "PASSED",
+      "duration": 0.005739450454711914,
+      "error": null
+    },
+    {
+      "name": "Robustness Framework Import",
+      "status": "FAILED",
+      "duration": 0.004753589630126953,
+      "error": "AssertionError: Failed to import robustness framework: No module named 'psutil'"
+    },
+    {
+      "name": "HyperScale Optimization Import",
+      "status": "FAILED",
+      "duration": 0.007642507553100586,
+      "error": "AssertionError: Failed to import hyperscale optimization: No module named 'psutil'"
+    },
+    {
+      "name": "Research Engine Import",
+      "status": "FAILED",
+      "duration": 0.00176239013671875,
+      "error": "AssertionError: Failed to import research engine: No module named 'numpy'"
+    },
+    {
+      "name": "Experimental Framework Import",
+      "status": "FAILED",
+      "duration": 0.0008971691131591797,
+      "error": "AssertionError: Failed to import experimental framework: No module named 'numpy'"
+    },
+    {
+      "name": "Basic Functionality",
+      "status": "PASSED",
+      "duration": 5.91278076171875e-05,
+      "error": null
+    },
+    {
+      "name": "Async Functionality",
+      "status": "PASSED",
+      "duration": 0.0034050941467285156,
+      "error": null
+    },
+    {
+      "name": "Error Handling",
+      "status": "PASSED",
+      "duration": 2.1696090698242188e-05,
+      "error": null
+    },
+    {
+      "name": "Configuration Validation",
+      "status": "PASSED",
+      "duration": 1.4543533325195312e-05,
+      "error": null
+    },
+    {
+      "name": "Data Structures",
+      "status": "PASSED",
+      "duration": 3.0279159545898438e-05,
+      "error": null
+    }
+  ]
+}
