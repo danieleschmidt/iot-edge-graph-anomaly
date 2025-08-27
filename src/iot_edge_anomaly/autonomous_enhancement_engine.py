@@ -61,11 +61,11 @@ class AdaptiveLearningSystem:
     """
     
     def __init__(self, config: Dict[str, Any]):
-        self.config = config
+        self.config = config or {}
         self.performance_history = []
         self.enhancement_history = []
-        self.learning_rate = config.get('learning_rate', 0.001)
-        self.adaptation_threshold = config.get('adaptation_threshold', 0.05)
+        self.learning_rate = self.config.get('learning_rate', 0.001)
+        self.adaptation_threshold = self.config.get('adaptation_threshold', 0.05)
         
     def analyze_performance_patterns(self, metrics_data: List[Dict[str, Any]]) -> Dict[str, float]:
         """Analyze performance patterns to identify improvement opportunities."""
@@ -177,7 +177,7 @@ class InnovationEngine:
     """
     
     def __init__(self, config: Dict[str, Any]):
-        self.config = config
+        self.config = config or {}
         self.research_queue = queue.Queue()
         self.innovation_history = []
         
@@ -298,19 +298,19 @@ class AutonomousEnhancementEngine:
     Main autonomous enhancement engine coordinating all improvement systems.
     """
     
-    def __init__(self, config: Dict[str, Any]):
-        self.config = config
-        self.adaptive_learning = AdaptiveLearningSystem(config.get('adaptive_learning', {}))
-        self.innovation_engine = InnovationEngine(config.get('innovation', {}))
+    def __init__(self, config: Dict[str, Any] = None):
+        self.config = config or {}
+        self.adaptive_learning = AdaptiveLearningSystem(self.self.config.get('adaptive_learning', {}))
+        self.innovation_engine = InnovationEngine(self.config.get('innovation', {}))
         
         self.enhancement_candidates = []
         self.active_enhancements = []
         self.metrics_history = []
         
         # Autonomous execution settings
-        self.autonomous_mode = config.get('autonomous_mode', True)
-        self.confidence_threshold = config.get('confidence_threshold', 0.7)
-        self.max_concurrent_enhancements = config.get('max_concurrent_enhancements', 3)
+        self.autonomous_mode = self.config.get('autonomous_mode', True)
+        self.confidence_threshold = self.config.get('confidence_threshold', 0.7)
+        self.max_concurrent_enhancements = self.config.get('max_concurrent_enhancements', 3)
         
         logger.info(f"Autonomous Enhancement Engine initialized with confidence threshold: {self.confidence_threshold}")
     
@@ -345,7 +345,7 @@ class AutonomousEnhancementEngine:
                 self._log_enhancement_status()
                 
                 # Wait before next cycle
-                await asyncio.sleep(self.config.get('enhancement_cycle_seconds', 300))  # 5 minutes
+                await asyncio.sleep(self.self.config.get('enhancement_cycle_seconds', 300))  # 5 minutes
                 
             except Exception as e:
                 logger.error(f"Error in autonomous enhancement loop: {e}")
