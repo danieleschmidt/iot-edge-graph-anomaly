@@ -347,6 +347,30 @@ class ComplianceValidator:
         return config.get("strict_access_controls_enabled", True)
 
 
+# Main deployment system class for API compatibility  
+class GlobalFirstDeploymentSystem:
+    """
+    Main deployment system for global-first IoT anomaly detection.
+    Provides high-level API for autonomous deployment orchestration.
+    """
+    
+    def __init__(self, config: Dict[str, Any] = None):
+        """Initialize the global deployment system."""
+        self.config = config or {}
+        self.orchestrator = GlobalDeploymentOrchestrator(self.config)
+        
+    async def deploy(self) -> Dict[str, Any]:
+        """Deploy the system globally with autonomous configuration."""
+        return await self.orchestrator.deploy_globally(self.config)
+        
+    def get_supported_regions(self) -> List[str]:
+        """Get list of supported deployment regions."""
+        return [region.value for region in Region]
+        
+    def get_supported_languages(self) -> List[str]:
+        """Get list of supported languages for i18n."""
+        return [lang.value for lang in Language]
+
 class GlobalDeploymentOrchestrator:
     """Orchestrates multi-region global deployment with compliance and i18n."""
     
