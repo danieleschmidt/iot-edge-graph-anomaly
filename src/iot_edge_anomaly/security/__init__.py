@@ -1,1 +1,0 @@
-"""Security components for IoT anomaly detection."""

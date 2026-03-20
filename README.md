@@ -1,137 +1,57 @@
-# 🚀 Advanced IoT Edge Anomaly Detection System
+# IoT Edge Graph Anomaly Detection
 
-<!-- IMPORTANT: Replace 'your-github-username-or-org' with your actual GitHub details -->
-[![Build Status](https://img.shields.io/github/actions/workflow/status/your-github-username-or-org/iot-edge-graph-anomaly/ci.yml?branch=main)](https://github.com/your-github-username-or-org/iot-edge-graph-anomaly/actions)
-[![Coverage Status](https://img.shields.io/coveralls/github/your-github-username-or-org/iot-edge-graph-anomaly)](https://coveralls.io/github/your-github-username-or-org/iot-edge-graph-anomaly)
-[![License](https://img.shields.io/github/license/your-github-username-or-org/iot-edge-graph-anomaly)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v4.0.0-brightgreen)](https://semver.org)
-[![AI Research](https://img.shields.io/badge/AI_Research-5_Novel_Algorithms-blue)](docs/RESEARCH.md)
-[![Performance](https://img.shields.io/badge/Performance-99.2%25_F1_Score-green)](docs/BENCHMARKS.md)
+LSTM Autoencoder + Graph Neural Network for IoT sensor anomaly detection with OTA deployment.
 
-**World's Most Advanced IoT Anomaly Detection System** featuring 5 breakthrough AI algorithms with **99.2% accuracy**, **3.8ms inference**, and **privacy-preserving federated learning**.
+## Features
 
-This revolutionary system combines **Transformer-VAE temporal modeling**, **sparse graph attention networks**, **physics-informed neural networks**, **self-supervised registration learning**, and **federated learning** into a unified, production-ready platform optimized for edge deployment.
+- **Pure NumPy LSTM Autoencoder** — no PyTorch or TensorFlow required
+- **Sensor Graph** — adjacency matrix + graph convolution for spatial relationships
+- **Anomaly Detector** — auto-calibrating threshold from normal data
+- **Synthetic Data Generator** — sinusoidal sensor patterns with spike/drift/dropout anomalies
+- **OTA Deployer** — model versioning with numpy `.npz` format
+- **Docker-ready**
 
-## 🎯 Revolutionary AI Breakthroughs
+## Quick Start
 
-### 🧠 Five Novel Algorithmic Innovations
-
-1. **🤖 Transformer-VAE Temporal Modeling**
-   - Advanced transformer architecture with variational autoencoders
-   - 15-20% performance improvement over traditional LSTM
-   - Edge-optimized with 8-bit quantization support
-
-2. **⚡ Sparse Graph Attention Networks**
-   - O(n log n) complexity reduction from O(n²)
-   - Adaptive sparsity with dynamic topology learning
-   - 50%+ computational efficiency gain
-
-3. **🔬 Physics-Informed Neural Networks**
-   - World's first physics-informed LSTM-GNN hybrid for IoT
-   - Mass conservation, energy balance, and pressure constraints
-   - 10-15% accuracy improvement with better interpretability
-
-4. **🛡️ Self-Supervised Registration Learning**
-   - Few-shot anomaly detection with minimal labeled data
-   - 92% reduction in training data requirements
-   - Temporal-spatial registration for robust representations
-
-5. **🌐 Privacy-Preserving Federated Learning**
-   - Differential privacy with Byzantine-robust aggregation
-   - Cross-organizational learning without data sharing
-   - Blockchain-ready secure model aggregation
-
-### 📊 Performance Excellence
-- **99.2% F1-Score** on SWaT industrial dataset
-- **3.8ms inference time** on edge devices  
-- **42MB model size** with quantization optimization
-- **89% zero-day anomaly detection** accuracy
-- **150+ sensors** scalability support
-
-## ⚡ Quick Start
-
-### 🚀 Basic Usage
 ```bash
-# Install the advanced system
 pip install -e .
-
-# Run with basic ensemble (auto-detects best models)
-python -m iot_edge_anomaly.main --config config/advanced_ensemble.yaml
-
-# Enable all 5 advanced algorithms
-python -m iot_edge_anomaly.advanced_main --enable-all-models
+python -m iot_anomaly
 ```
 
-### 🔬 Advanced Configuration
+## Structure
+
+```
+src/iot_anomaly/
+  data_generator.py   # SyntheticSensorData
+  lstm_autoencoder.py # Pure numpy LSTM autoencoder
+  graph.py            # SensorGraph with adjacency matrix
+  detector.py         # AnomalyDetector
+  ota.py              # OTADeployer
+tests/
+  test_data_generator.py
+  test_lstm_autoencoder.py
+  test_graph.py
+  test_detector.py
+  test_ota.py
+```
+
+## Usage
+
 ```python
-# Advanced Ensemble Integration
-from src.iot_edge_anomaly.models.advanced_hybrid_integration import create_advanced_hybrid_system
+from iot_anomaly.data_generator import SyntheticSensorData
+from iot_anomaly.detector import AnomalyDetector
 
-# Create world-class ensemble system
-ensemble = create_advanced_hybrid_system({
-    'enable_transformer_vae': True,
-    'enable_sparse_gat': True,
-    'enable_physics_informed': True,
-    'enable_self_supervised': True,
-    'ensemble_method': 'dynamic_weighting'
-})
+gen = SyntheticSensorData(n_sensors=5, seq_len=50)
+X_normal = gen.generate_normal(n_samples=100)
+X_anomalous = gen.generate_anomalous(n_samples=20, anomaly_type="spike")
 
-# Make prediction with uncertainty quantification
-prediction, explanations = ensemble.predict(
-    sensor_data, edge_index, sensor_metadata,
-    return_explanations=True
-)
+detector = AnomalyDetector(n_sensors=5, hidden_dim=16)
+detector.fit(X_normal)
+predictions = detector.predict(X_anomalous)
 ```
 
-### 🌐 Federated Deployment
+## Tests
+
 ```bash
-# Deploy federated client
-python -m iot_edge_anomaly.federated_main \
-    --client-id edge_facility_01 \
-    --server-url https://federated.anomaly.ai \
-    --privacy-epsilon 1.0
-
-# Run federated server (for coordinators)
-python -m iot_edge_anomaly.federated_server \
-    --aggregation-method byzantine_robust \
-    --min-clients 5
+pytest tests/ -v
 ```
-
-## 🗺️ Technology Roadmap
-
-### ✅ **v4.0.0** - CURRENT: Revolutionary AI Breakthrough
-*   **5 Novel AI Algorithms**: Transformer-VAE, Sparse GAT, Physics-Informed, Self-Supervised, Federated
-*   **99.2% Accuracy Achievement**: Best-in-class performance on industrial datasets
-*   **Production-Ready Ensemble**: Dynamic weighting with uncertainty quantification
-*   **Privacy-Preserving Federation**: Differential privacy with Byzantine robustness
-*   **Edge Optimization**: 42MB models with sub-4ms inference
-
-### 🔮 **v5.0.0** - FUTURE: Quantum-Enhanced Intelligence  
-*   **Quantum-Classical Hybrid**: Quantum optimization for constraint satisfaction
-*   **Neuromorphic Computing**: Spiking neural networks for ultra-low power
-*   **Causal Discovery**: Automated causal relationship inference
-*   **Multi-Modal Fusion**: Vision, audio, vibration sensor integration
-*   **Continual Learning**: Lifelong adaptation without catastrophic forgetting
-
-### 🌟 **Research Pipeline**
-*   **Active Research**: 3 papers submitted to NeurIPS, ICML, IEEE IoT Journal  
-*   **Patent Applications**: 5 novel algorithms under patent review
-*   **Open Source**: Production implementations released to community
-*   **Benchmark Datasets**: Enhanced evaluation frameworks for research community
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our organization-wide `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md`. A `CHANGELOG.md` is maintained.
-
-## See Also
-
-*   **[lang-observatory](../lang-observatory)**: The destination for monitoring metrics from this edge agent.
-
-## 📝 License
-
-This project is licensed under the Apache-2.0 License.
-
-## 📚 References
-
-*   **SWaT Dataset**: [iTrust Dataset Information Page](https://itrust.sutd.edu.sg/itrust-labs_datasets/)
-*   **GNN for IoT Anomaly Detection (2024 Study)**: ["A lightweight graph neural network for IoT anomaly detection" - IEEE Internet of Things Journal](https://ieeexplore.ieee.org/document/10387588)
